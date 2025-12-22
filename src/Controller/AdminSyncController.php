@@ -13,12 +13,22 @@ use Shopware\Core\Framework\Context;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Contracts\Translation\TranslatorInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 
 #[Route(defaults: ['_routeScope' => ['api']])]
 class AdminSyncController extends AbstractController
 {
-    public function __construct(private readonly SyncService $syncService, private readonly TranslatorInterface $translator)
-    {
+    /**
+     * @param EntityRepository $stateMachineRepository
+     */
+    public function __construct(
+        private readonly SyncService $syncService,
+        private readonly TranslatorInterface $translator,
+        private readonly EntityRepository $stateMachineRepository,
+        private readonly EntityRepository $stateMachineStateRepository,
+    ) {
     }
 
     #[Route(path: '/api/_action/infoplus/sync/products', name: 'api.infoplus.sync.products', methods: ['POST'])]
@@ -371,5 +381,33 @@ class AdminSyncController extends AbstractController
     public function config(ConfigService $configService): JsonResponse
     {
         return new JsonResponse($configService->getAll());
+    }
+
+    #[Route(path: '/api/_action/infoplus/payment-states', name: 'api.infoplus.paymentStates', methods: ['GET'])]
+    public function getPaymentStates(Context $context): JsonResponse
+    {
+        $machineCriteria = new Criteria();
+        $machineCriteria->addFilter(new EqualsFilter('technicalName', 'order_transaction.state'));
+        $stateMachine = $this->stateMachineRepository->search($machineCriteria, $context)->first();
+
+        if (!$stateMachine) {
+            return new JsonResponse(['data' => []]);
+        }
+
+        $stateCriteria = new Criteria();
+        $stateCriteria->addFilter(new EqualsFilter('stateMachineId', $stateMachine->getId()));
+
+        $states = $this->stateMachineStateRepository->search($stateCriteria, $context)->getEntities();
+
+        $data = [];
+        foreach ($states as $state) {
+            $data[] = [
+                'id' => $state->getTechnicalName(),
+                'name' => $state->getTechnicalName(),
+            ];
+        }
+
+        usort($data, static fn (array $a, array $b) => strcmp((string) $a['name'], (string) $b['name']));
+        return new JsonResponse(['data' => $data]);
     }
 }

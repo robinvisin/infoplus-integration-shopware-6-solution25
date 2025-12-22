@@ -13,6 +13,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\Field\JsonField;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\StringField;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityDefinition;
 use Shopware\Core\Framework\DataAbstractionLayer\FieldCollection;
+use Shopware\Core\Framework\DataAbstractionLayer\Field\FloatField;
 
 class InfoplusFieldDefinitionDefinition extends EntityDefinition
 {
@@ -47,6 +48,7 @@ class InfoplusFieldDefinitionDefinition extends EntityDefinition
             (new DateTimeField('created_at', 'createdAt'))->addFlags(new Required()),
             new DateTimeField('updated_at', 'updatedAt'),
             (new BoolField('show_in_storefront', 'showInStorefront'))->addFlags(new ApiAware()),
+            (new FloatField('static_price', 'staticPrice'))->addFlags(new ApiAware()),
         ]);
     }
 }

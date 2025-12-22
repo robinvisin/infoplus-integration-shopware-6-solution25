@@ -37,19 +37,23 @@ class LogFileController extends AbstractController
         $logs = [];
         try {
             if (!is_dir($this->logsDir)) {
-                return new JsonResponse(['error' => 'Log directory not found'], 500);
+                $response = new JsonResponse(['error' => 'Log directory not found'], 500);
+                $response->setEncodingOptions(JSON_UNESCAPED_UNICODE | JSON_INVALID_UTF8_SUBSTITUTE);
+                return $response;
             }
 
             $files = scandir($this->logsDir, SCANDIR_SORT_DESCENDING);
             if (!is_array($files)) {
-                return new JsonResponse(['error' => 'Unable to read log directory'], 500);
+                $response = new JsonResponse(['error' => 'Unable to read log directory'], 500);
+                $response->setEncodingOptions(JSON_UNESCAPED_UNICODE | JSON_INVALID_UTF8_SUBSTITUTE);
+                return $response;
             }
 
             foreach ($files as $file) {
                 if ($file === '.' || $file === '..') {
                     continue;
                 }
-                if (str_starts_with($file, 'InfoPlus')) {
+                if (str_starts_with($file, 'InfoPlus') && str_ends_with($file, '.log')) {
                     $path = $this->logsDir . '/' . $file;
                     if (!is_file($path) || !is_readable($path)) {
                         continue;
@@ -73,9 +77,13 @@ class LogFileController extends AbstractController
                 }
             }
         } catch (\Exception $e) {
-            return new JsonResponse(['error' => 'An error occurred while retrieving logs: ' . $e->getMessage()], 500);
+            $response = new JsonResponse(['error' => 'An error occurred while retrieving logs: ' . $e->getMessage()], 500);
+            $response->setEncodingOptions(JSON_UNESCAPED_UNICODE | JSON_INVALID_UTF8_SUBSTITUTE);
+            return $response;
         }
-        return new JsonResponse(['logs' => $logs]);
+        $response = new JsonResponse(['logs' => $logs]);
+        $response->setEncodingOptions(JSON_UNESCAPED_UNICODE | JSON_INVALID_UTF8_SUBSTITUTE);
+        return $response;
     }
 
     #[Route(
@@ -90,7 +98,9 @@ class LogFileController extends AbstractController
         $filePath = $this->logsDir . '/' . $file;
 
         if (!is_file($filePath) || !is_readable($filePath)) {
-            return new JsonResponse(['error' => 'Log file not found or not readable'], 404);
+            $response = new JsonResponse(['error' => 'Log file not found or not readable'], 404);
+            $response->setEncodingOptions(JSON_UNESCAPED_UNICODE | JSON_INVALID_UTF8_SUBSTITUTE);
+            return $response;
         }
 
         $request = $this->requestStack->getCurrentRequest();
@@ -120,9 +130,13 @@ class LogFileController extends AbstractController
                 }
                 $lines[] = rtrim($line, "\r\n");
             }
-            return new JsonResponse(['lines' => $lines, 'total' => $total]);
+            $response = new JsonResponse(['lines' => $lines, 'total' => $total]);
+            $response->setEncodingOptions(JSON_UNESCAPED_UNICODE | JSON_INVALID_UTF8_SUBSTITUTE);
+            return $response;
         } catch (\Exception $e) {
-            return new JsonResponse(['error' => 'An error occurred while reading the log file: ' . $e->getMessage()], 500);
+            $response = new JsonResponse(['error' => 'An error occurred while reading the log file: ' . $e->getMessage()], 500);
+            $response->setEncodingOptions(JSON_UNESCAPED_UNICODE | JSON_INVALID_UTF8_SUBSTITUTE);
+            return $response;
         }
     }
 
@@ -135,7 +149,9 @@ class LogFileController extends AbstractController
     public function downloadLogFile(string $file): StreamedResponse|JsonResponse
     {
         if (!preg_match('/^[A-Za-z0-9._\-]+$/', $file)) {
-            return new JsonResponse(['error' => 'Invalid file name'], 400);
+            $response = new JsonResponse(['error' => 'Invalid file name'], 400);
+            $response->setEncodingOptions(JSON_UNESCAPED_UNICODE | JSON_INVALID_UTF8_SUBSTITUTE);
+            return $response;
         }
 
         $filePath = $this->logsDir . '/' . $file;
@@ -143,11 +159,15 @@ class LogFileController extends AbstractController
         $logsRealPath = realpath($this->logsDir) ?: $this->logsDir;
 
         if ($realPath === false || !str_starts_with($realPath, $logsRealPath . DIRECTORY_SEPARATOR)) {
-            return new JsonResponse(['error' => 'Invalid path'], 400);
+            $response = new JsonResponse(['error' => 'Invalid path'], 400);
+            $response->setEncodingOptions(JSON_UNESCAPED_UNICODE | JSON_INVALID_UTF8_SUBSTITUTE);
+            return $response;
         }
 
         if (!is_file($realPath) || !is_readable($realPath)) {
-            return new JsonResponse(['error' => 'Log file not found or not readable'], 404);
+            $response = new JsonResponse(['error' => 'Log file not found or not readable'], 404);
+            $response->setEncodingOptions(JSON_UNESCAPED_UNICODE | JSON_INVALID_UTF8_SUBSTITUTE);
+            return $response;
         }
 
         try {
@@ -162,7 +182,9 @@ class LogFileController extends AbstractController
             $response->headers->set('Content-Disposition', $disposition);
             return $response;
         } catch (\Exception $e) {
-            return new JsonResponse(['error' => 'Download failed: ' . $e->getMessage()], 500);
+            $response = new JsonResponse(['error' => 'Download failed: ' . $e->getMessage()], 500);
+            $response->setEncodingOptions(JSON_UNESCAPED_UNICODE | JSON_INVALID_UTF8_SUBSTITUTE);
+            return $response;
         }
     }
 }

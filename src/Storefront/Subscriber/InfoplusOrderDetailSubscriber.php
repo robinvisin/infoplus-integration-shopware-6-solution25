@@ -6,6 +6,7 @@ use InfoPlusCommerce\Core\Content\InfoplusFieldDefinition\InfoplusFieldDefinitio
 use InfoPlusCommerce\Core\Content\InfoplusFieldDefinition\InfoplusFieldDefinitionEntity;
 use Shopware\Core\Checkout\Order\Aggregate\OrderLineItem\OrderLineItemCollection;
 use Shopware\Core\Checkout\Order\OrderEntity;
+use Shopware\Core\Framework\DataAbstractionLayer\Entity;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsAnyFilter;
@@ -37,8 +38,12 @@ class InfoplusOrderDetailSubscriber implements EventSubscriberInterface
             $this->orderDetailLoaded($order, $event);
         }
     }
-    public function orderDetailLoaded(OrderEntity $order, AccountOrderPageLoadedEvent $event): void
+    public function orderDetailLoaded(Entity $order, AccountOrderPageLoadedEvent $event): void
     {
+        if (!$order instanceof OrderEntity) {
+            return;
+        }
+
         $lineItems = $order->getNestedLineItems();
         if (!$lineItems || $lineItems->count() === 0) {
             return;
@@ -81,7 +86,8 @@ class InfoplusOrderDetailSubscriber implements EventSubscriberInterface
             $map[$def->getTechnicalName()] = [
                 'label' => $def->getLabel(),
                 'type' => $def->getType(),
-                'options' => $def->getOptions()
+                'options' => $def->getOptions(),
+                'staticPrice' => $def->getStaticPrice(),
             ];
         }
 
@@ -97,7 +103,7 @@ class InfoplusOrderDetailSubscriber implements EventSubscriberInterface
                 if (!$def) {
                     continue;
                 }
-                $formatted = $this->formatValue($value, $def['type']);
+                $formatted = $this->formatValueWithPrice($value, $def);
                 $list[] = [
                     'technicalName' => $tech,
                     'label' => $def['label'],
@@ -110,7 +116,52 @@ class InfoplusOrderDetailSubscriber implements EventSubscriberInterface
             }
         }
     }
-    private function formatValue(mixed $value, string $type): string
+
+    /**
+     * @param array<string, mixed> $def
+     */
+    private function formatValueWithPrice(mixed $value, array $def): string
+    {
+        $type = (string)($def['type'] ?? '');
+        $valStr = $this->formatScalar($value, $type);
+        $suffix = '';
+
+        if ($type === 'select') {
+            $options = is_array($def['options'] ?? null) ? $def['options'] : [];
+            foreach ($options as $row) {
+                if (!is_array($row)) {
+                    continue;
+                }
+                $label = $row['label'] ?? ($row['name'] ?? null);
+                $optVal = $row['value'] ?? $label;
+                if ($optVal !== null && ((string)$optVal === (string)$value || (string)$label === (string)$value)) {
+                    if (array_key_exists('price', $row) && $row['price'] !== null && $row['price'] !== '') {
+                        $suffix = ' (+$' . (string)$row['price'] . ')';
+                    } elseif (array_key_exists('staticPrice', $def) && $def['staticPrice'] !== null) {
+                        $suffix = ' (+$' . (string)$def['staticPrice'] . ')';
+                    }
+                    break;
+                }
+            }
+        } else {
+            $static = $def['staticPrice'] ?? null;
+            if ($static !== null) {
+                $apply = false;
+                if ($type === 'boolean') {
+                    $apply = filter_var($value, FILTER_VALIDATE_BOOLEAN) || (string)$value === '1' || $value === 1;
+                } else {
+                    $apply = ($value !== null && $value !== '' && $value !== '0');
+                }
+                if ($apply) {
+                    $suffix = ' (+$' . (string)$static . ')';
+                }
+            }
+        }
+
+        return trim($valStr . $suffix);
+    }
+
+    private function formatScalar(mixed $value, string $type): string
     {
         if ($type === 'boolean') {
             $bool = filter_var($value, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE);

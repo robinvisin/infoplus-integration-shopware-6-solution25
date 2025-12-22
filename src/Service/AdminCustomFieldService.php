@@ -53,6 +53,7 @@ class AdminCustomFieldService
                 'position' => $entity->getPosition(),
                 'active' => $entity->isActive(),
                 'showInStorefront' => $entity->getShowInStorefront(),
+                'staticPrice' => $entity->getStaticPrice(),
             ];
         }
 
@@ -85,6 +86,7 @@ class AdminCustomFieldService
             'position' => $entity->getPosition(),
             'active' => $entity->isActive(),
             'showInStorefront' => $entity->getShowInStorefront(),
+            'staticPrice' => $entity->getStaticPrice(),
         ];
     }
 
@@ -107,6 +109,10 @@ class AdminCustomFieldService
             $data['options'] = $this->normalizeOptions($data['options']);
         }
 
+        if (isset($data['staticPrice'])) {
+            $data['staticPrice'] = $this->toFloatOrNull($data['staticPrice']);
+        }
+
         $data['showInStorefront'] = $data['showInStorefront'] ?? false;
         $this->customFieldRepository->create([$data], $context);
     }
@@ -126,6 +132,10 @@ class AdminCustomFieldService
 
         if (isset($data['options'])) {
             $data['options'] = $this->normalizeOptions($data['options']);
+        }
+
+        if (isset($data['staticPrice'])) {
+            $data['staticPrice'] = $this->toFloatOrNull($data['staticPrice']);
         }
 
         $data['id'] = $id;
@@ -150,16 +160,85 @@ class AdminCustomFieldService
     private function normalizeOptions($options): array
     {
         if (is_string($options)) {
-            $normalized = array_map('trim', explode("\n", $options));
-        } else {
-            $arrayOptions = (array)$options;
-            $normalized = array_map(static function ($v) {
-                return is_string($v) ? trim($v) : $v;
-            }, $arrayOptions);
+            $raw = trim($options);
+            if ($raw === '') {
+                return [];
+            }
+            $lines = preg_split("~\r?\n~", $raw) ?: [];
+            if (count($lines) === 1 && str_contains($raw, ',')) {
+                $lines = array_map('trim', explode(',', $raw));
+            }
+            $normalized = [];
+            foreach ($lines as $line) {
+                $line = trim($line);
+                if ($line === '') {
+                    continue;
+                }
+                $label = $line;
+                $price = null;
+                if (str_contains($line, ':')) {
+                    [$left, $right] = array_map('trim', explode(':', $line, 2));
+                    $label = $left;
+                    $price = $this->toFloatOrNull($right);
+                }
+                $entry = ['label' => $label, 'value' => $label];
+                if ($price !== null) {
+                    $entry['price'] = $price;
+                }
+                $normalized[] = $entry;
+            }
+            return $normalized;
         }
 
-        return array_values(array_filter($normalized, static function ($v) {
-            return $v !== null && $v !== '';
-        }));
+        $arrayOptions = (array)$options;
+        $normalized = [];
+        foreach ($arrayOptions as $v) {
+            if (is_array($v)) {
+                $label = isset($v['label']) ? (string)$v['label'] : (isset($v['name']) ? (string)$v['name'] : '');
+                if ($label === '') {
+                    continue;
+                }
+                $price = null;
+                if (isset($v['price'])) {
+                    $price = $this->toFloatOrNull($v['price']);
+                }
+                $value = isset($v['value']) ? (string)$v['value'] : $label;
+                $row = ['label' => $label, 'value' => $value];
+                if ($price !== null) {
+                    $row['price'] = $price;
+                }
+                $normalized[] = $row;
+            } elseif (is_string($v)) {
+                $label = trim($v);
+                if ($label === '') {
+                    continue;
+                }
+                $normalized[] = ['label' => $label, 'value' => $label];
+            }
+        }
+
+        return $normalized;
+    }
+
+    private function toFloatOrNull(mixed $raw): ?float
+    {
+        if ($raw === null || $raw === '') {
+            return null;
+        }
+        if (is_float($raw) || is_int($raw)) {
+            return (float)$raw;
+        }
+        if (!is_string($raw)) {
+            return null;
+        }
+        $s = trim($raw);
+        $s = str_replace(',', '.', $s);
+        // strip currency symbols/letters
+        $s = preg_replace('~[^0-9.\-]~', '', $s) ?? '';
+        if ($s === '') {
+            return null;
+        }
+        $f = (float)$s;
+        return is_finite($f) ? $f : null;
     }
 }

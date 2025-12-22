@@ -7,7 +7,7 @@ namespace InfoPlusCommerce\Service;
 use InfoPlusCommerce\Client\InfoplusApiClient;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
-use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsAnyFilter;
 use Shopware\Core\Framework\Struct\ArrayStruct;
 use Shopware\Core\System\StateMachine\StateMachineRegistry;
 use Shopware\Core\System\StateMachine\Transition;
@@ -70,6 +70,7 @@ class OrderSyncService
         $criteria->addAssociation('shippingAddress');
         $criteria->addAssociation('billingAddress');
         $criteria->addAssociation('billingAddress.country');
+        $criteria->addAssociation('billingAddress.countryState');
         $criteria->addAssociation('orderCustomer');
         $criteria->addAssociation('stateMachineState');
         $criteria->addAssociation('deliveries.stateMachineState');
@@ -77,8 +78,12 @@ class OrderSyncService
         $criteria->addAssociation('transactions.stateMachineState');
 
         $criteria->addFilter(
-            new EqualsFilter('transactions.stateMachineState.technicalName', 'paid')
+            new EqualsAnyFilter(
+                'transactions.stateMachineState.technicalName',
+                $this->configService->getSyncablePaymentStates()
+            )
         );
+
 
         $orders = $this->orderRepository->search($criteria, $context)->getEntities();
 
@@ -170,6 +175,7 @@ class OrderSyncService
                     $carrierId = $customFields['infoplus_carrier_id'];
                 }
             }
+            $orderCustomFieldsObject = $this->getCustomFieldsForOrder($order);
 
             $data = [
                 'lobId' => $this->configService->get('lobId'),
@@ -195,6 +201,7 @@ class OrderSyncService
                 'billToCountry' => $billingAddress && $billingAddress->getCountry() ? $billingAddress->getCountry()->getIso() : 'US',
                 'billToPhone' => $billingAddress ? ($billingAddress->getPhoneNumber() ?? '') : '',
                 'billToEmail' => $order->getOrderCustomer() ? $order->getOrderCustomer()->getEmail() : '',
+                'customFields' => $orderCustomFieldsObject
             ];
             //check if billToState is not US remove this field
             if (isset($data['billToCountry']) && strtoupper($data['billToCountry']) !== 'US') {
@@ -468,16 +475,39 @@ class OrderSyncService
 
     private function getCustomFieldsForLineItem(mixed $item): object
     {
-        $customFields = $item->getPayload() && isset($item->getPayload()['infoplus_customfields']) ? $item->getPayload()['infoplus_customfields'] : [];
-        $result = [];
-        if (is_array($customFields)) {
-            foreach ($customFields as $key => $value) {
-                if (strpos($key, 'infoplus_') === 0) {
-                    $newKey = substr($key, 9);
-                    $result[$newKey] = $value;
+        $payload = $item->getPayload() ?: [];
+        $customFields = [];
+        if (isset($payload['infoplus_customfields']) && \is_array($payload['infoplus_customfields'])) {
+            $customFields = $payload['infoplus_customfields'];
+        } else {
+            $liCustom = $item->getCustomFields() ?: [];
+            foreach ($liCustom as $k => $v) {
+                if (\is_string($k) && str_starts_with($k, 'infoplus_')) {
+                    $customFields[$k] = $v;
                 }
             }
         }
+
+        $result = [];
+        foreach ($customFields as $key => $value) {
+            if (\is_string($key) && str_starts_with($key, 'infoplus_')) {
+                $newKey = substr($key, 9);
+                $result[$newKey] = $value;
+            }
+        }
         return !empty($result) ? (object)$result : (object)[];
+    }
+
+    private function getCustomFieldsForOrder(OrderEntity $order): object
+    {
+        $raw = $order->getCustomFields() ?: [];
+        $filtered = [];
+        foreach ($raw as $key => $value) {
+            if (\is_string($key) && str_starts_with($key, 'infoplus_')) {
+                $newKey = substr($key, 9);
+                $filtered[$newKey] = $value;
+            }
+        }
+        return !empty($filtered) ? (object)$filtered : (object)[];
     }
 }

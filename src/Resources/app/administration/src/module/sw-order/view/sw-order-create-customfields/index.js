@@ -20,7 +20,8 @@ Shopware.Component.register('sw-order-create-customfields', {
                 const product = item.payload && item.payload.product;
                 const productCustomFields = product && product.customFields ? product.customFields : {};
                 result[item.id] = this.infoplusCustomFields.filter(field => {
-                    return productCustomFields['infoplus_' + field.technicalName] === true;
+                    const val = productCustomFields['infoplus_' + field.technicalName];
+                    return val === true || val === 1 || String(val) === '1' || Boolean(val) === true;
                 });
             });
             return result;
@@ -44,7 +45,7 @@ Shopware.Component.register('sw-order-create-customfields', {
                 this.cleanupInfoplusLocalStorage();
                 this.restoreLineItemCustomFieldsFromLocalStorage();
             }
-        },
+        }
     },
     async created() {
         this.loadLineItems();
@@ -75,7 +76,7 @@ Shopware.Component.register('sw-order-create-customfields', {
         loadProductsForLineItems() {
             const productRepository = this.repositoryFactory.create('product');
             const productIds = this.lineItems
-                .map(item => item.id)
+                .map(item => item.referencedId || (item.payload && item.payload.product && item.payload.product.id))
                 .filter(id => !!id);
             if (!productIds.length) return;
             const criteria = new Criteria();
@@ -84,8 +85,9 @@ Shopware.Component.register('sw-order-create-customfields', {
                 productRepository.search(criteria, Shopware.Context.api)
                     .then(products => {
                         this.lineItems.forEach(item => {
-                            const productId = item.id;
+                            const productId = item.referencedId || (item.payload && item.payload.product && item.payload.product.id);
                             if (productId && products.get(productId)) {
+                                if (!item.payload) this.$set(item, 'payload', {});
                                 this.$set(item.payload, 'product', products.get(productId));
                             }
                         });
@@ -142,7 +144,7 @@ Shopware.Component.register('sw-order-create-customfields', {
                             infoplus[k] = all[k];
                         }
                     });
-                    return { id: item.id, customFields: infoplus };
+                    return { id: item.id, referencedId: item.referencedId, customFields: infoplus };
                 });
                 const payload = {
                     token: this.contextToken,
@@ -167,12 +169,14 @@ Shopware.Component.register('sw-order-create-customfields', {
                     window.localStorage.removeItem(key);
                     return;
                 }
-                const map = {};
+                const byId = {};
+                const byRef = {};
                 (parsed.items || []).forEach(entry => {
-                    map[entry.id] = entry.customFields || {};
+                    if (entry.id) byId[entry.id] = entry.customFields || {};
+                    if (entry.referencedId) byRef[entry.referencedId] = entry.customFields || {};
                 });
                 this.lineItems.forEach(item => {
-                    const saved = map[item.id];
+                    const saved = byId[item.id] || (item.referencedId ? byRef[item.referencedId] : null);
                     if (!saved) return;
                     if (!item.customFields) {
                         this.$set(item, 'customFields', {});
@@ -183,16 +187,20 @@ Shopware.Component.register('sw-order-create-customfields', {
                     if (!item.payload.customFields) {
                         this.$set(item.payload, 'customFields', {});
                     }
+                    if (!item.payload.infoplus_customfields) {
+                        this.$set(item.payload, 'infoplus_customfields', {});
+                    }
                     Object.keys(saved).forEach(k => {
                         this.$set(item.customFields, k, saved[k]);
                         this.$set(item.payload.customFields, k, saved[k]);
+                        this.$set(item.payload.infoplus_customfields, k, saved[k]);
                     });
                 });
             } catch (e) {
                 console.warn('Infoplus localStorage restore failed', e);
             }
         },
-        updateCustomField(item, key, value) {
+        async updateCustomField(item, key, value) {
             const fieldName = key.replace('infoplus_', '');
             const fieldDef = this.infoplusCustomFields.find(f => f.technicalName === fieldName);
             let finalValue = value;
@@ -208,8 +216,12 @@ Shopware.Component.register('sw-order-create-customfields', {
             if (!item.payload.customFields) {
                 this.$set(item.payload, 'customFields', {});
             }
+            if (!item.payload.infoplus_customfields) {
+                this.$set(item.payload, 'infoplus_customfields', {});
+            }
             this.$set(item.customFields, key, finalValue);
             this.$set(item.payload.customFields, key, finalValue);
+            this.$set(item.payload.infoplus_customfields, key, finalValue);
         },
         async pushInfoplusToCartPayload() {
             const salesChannelId = this.salesChannelId;
@@ -217,7 +229,7 @@ Shopware.Component.register('sw-order-create-customfields', {
             if (!salesChannelId || !contextToken) return;
             const service = Shopware.Service('cartStoreService');
             const url = `_proxy/store-api/${salesChannelId}/infoplus/cart/line-item/custom-fields`;
-            const headers = { ...service.getBasicHeaders(), 'sw-context-token': contextToken };
+            const headers = { ...service.getBasicHeaders(), 'sw-context-token': contextToken, 'X-Infoplus-Admin': '1' };
             const items = this.lineItems.map(item => {
                 const out = { id: item.id, customFields: {} };
                 const src = item.payload?.customFields || item.customFields || {};
@@ -233,6 +245,7 @@ Shopware.Component.register('sw-order-create-customfields', {
                     }
                 });
                 if (!item.payload) this.$set(item, 'payload', {});
+                if (!item.payload.infoplus_customfields) this.$set(item.payload, 'infoplus_customfields', {});
                 this.$set(item.payload, 'infoplus_customfields', out.customFields);
                 return out;
             }).filter(x => Object.keys(x.customFields).length > 0);
@@ -308,15 +321,9 @@ Shopware.Component.register('sw-order-create-customfields', {
                 return;
             }
             try {
-                for (const item of this.lineItems) {
-                    await State.dispatch('swOrder/saveLineItem', {
-                        salesChannelId,
-                        contextToken: this.contextToken,
-                        item,
-                    });
-                }
                 await this.pushInfoplusToCartPayload();
                 this.persistLineItemsToLocalStorage();
+                await State.dispatch('swOrder/getCart', { salesChannelId: this.salesChannelId, contextToken: this.contextToken });
                 this.createNotificationSuccess({
                     title: 'Success',
                     message: 'Custom fields saved successfully.'

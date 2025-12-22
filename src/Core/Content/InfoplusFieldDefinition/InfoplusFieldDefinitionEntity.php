@@ -25,6 +25,7 @@ class InfoplusFieldDefinitionEntity extends Entity
     protected int $position = 0;
     protected bool $active = true;
     protected bool $showInStorefront = false;
+    protected ?float $staticPrice = null;
 
     public function getTechnicalName(): string
     {
@@ -99,5 +100,14 @@ class InfoplusFieldDefinitionEntity extends Entity
     public function setShowInStorefront(bool $showInStorefront): void
     {
         $this->showInStorefront = $showInStorefront;
+    }
+
+    public function getStaticPrice(): ?float
+    {
+        return $this->staticPrice;
+    }
+    public function setStaticPrice(?float $staticPrice): void
+    {
+        $this->staticPrice = $staticPrice;
     }
 }

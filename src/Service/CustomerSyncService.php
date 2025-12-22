@@ -77,6 +77,20 @@ class CustomerSyncService
                 $this->logger->warning('[InfoPlus] No billing address found for customer ' . $customer->getId());
                 continue;
             }
+
+            $countryIso = (string)($billingAddress->getCountry()?->getIso() ?? '');
+            $mappedCountry = MappingService::mapIsoToInfoplusCountry($countryIso);
+            if ($mappedCountry === null) {
+                $message = $this->translator->trans('infoplus.service.errors.countryMappingNotFound', ['%iso%' => $countryIso, '%customerId%' => $customer->getId()]);
+                $this->logger->error('[InfoPlus] ' . $message, ['iso' => $countryIso, 'customerId' => $customer->getId()]);
+                $results[] = [
+                    'customerNo' => $customer->getId(),
+                    'success' => false,
+                    'error' => $message,
+                ];
+                continue;
+            }
+
             $data = [
                 'lobId' => (string)$lobId,
                 'customerNo' => ($customer->getCustomerNumber() ?: $customer->getId()),
@@ -87,7 +101,7 @@ class CustomerSyncService
                 'street3Province' => '',
                 'city' => $billingAddress->getCity(),
                 'zipCode' => $billingAddress->getZipcode(),
-                'country' => MappingService::mapIsoToInfoplusCountry((string)($billingAddress->getCountry()?->getIso() ?? 'US')),
+                'country' => $mappedCountry,
                 'phone' => $billingAddress->getPhoneNumber(),
                 'email' => $customer->getEmail(),
                 'truckCarrierId' => $truckCarrierId,
@@ -97,8 +111,20 @@ class CustomerSyncService
                 'customFields' => null
             ];
 
-            if ($billingAddress->getCountryState() && $data['country'] === 'UNITED STATES') {
-                $data['state'] = MappingService::mapIsoToInfoplusUsState($billingAddress->getCountryState()->getShortCode() ?: '');
+            if ($mappedCountry === 'UNITED STATES') {
+                $stateShort = (string)($billingAddress->getCountryState()?->getShortCode() ?? '');
+                $mappedState = MappingService::mapIsoToInfoplusUsState($stateShort);
+                if ($mappedState === null) {
+                    $message = $this->translator->trans('infoplus.service.errors.usStateMappingNotFound', ['%state%' => $stateShort, '%customerId%' => $customer->getId()]);
+                    $this->logger->error('[InfoPlus] ' . $message, ['state' => $stateShort, 'customerId' => $customer->getId()]);
+                    $results[] = [
+                        'customerNo' => $data['customerNo'],
+                        'success' => false,
+                        'error' => $message
+                    ];
+                    continue;
+                }
+                $data['state'] = $mappedState;
             }
 
             $existingCustomer = $this->infoplusApiClient->getCustomerByCustomerNo($lobId, $data['customerNo']);

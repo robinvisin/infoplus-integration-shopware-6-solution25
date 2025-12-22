@@ -13,7 +13,10 @@
       "categorySettings": "Infoplus Categories",
       "subCategorySettings": "Infoplus Sub Categories",
       "logInfo": "Log Info",
-      "customFieldSettings": "Custom Field Settings"
+      "customFieldSettings": "Custom Field Settings",
+      "syncablePaymentStatesLabel": "Syncable payment statuses",
+      "syncablePaymentStatesHelp": "Select which order payment statuses (transaction state technical names) should be eligible for Infoplus order sync.",
+      "save": "Save"
     },
     "category": {
       "editTitle": "Edit Category",
@@ -73,7 +76,7 @@
       "syncing": "Syncing order with Infoplus...",
       "syncedAtPrefix": "Order synced at",
       "errors": {
-        "paymentNotPaid": "Order payment status is not \"paid\". Only paid orders can be synced.",
+        "paymentNotPaid": "Order payment status is not eligible for syncing.",
         "missingId": "Order ID is not available for syncing.",
         "failedToGetData": "Failed to get data:",
         "failedToSync": "Failed to sync order:",
@@ -249,6 +252,8 @@
       "saved": "Custom field saved.",
       "save": "Save",
       "optionsPlaceholder": "Enter options separated by commas",
+      "optionsPlaceholderNewline": "Enter options, one per line. Add optional price with colon. Example:\nFeature 1: 15\nFeature 2: 16.5",
+      "staticPriceHelp": "If set, this price is added when the field is filled/selected (also applies to boolean when checked).",
       "columns": {
         "technicalName": "Technical Name",
         "label": "Label",
@@ -257,7 +262,8 @@
         "active": "Active",
         "showInStorefront": "Show for Customer",
         "position": "Position",
-        "options": "Options"
+        "options": "Options",
+        "staticPrice": "Static Price"
       }
     },
     "shipping": {

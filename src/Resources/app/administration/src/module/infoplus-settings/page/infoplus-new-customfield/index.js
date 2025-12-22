@@ -16,6 +16,7 @@ Component.register('infoplus-new-customfield', {
                 position: 0,
                 showInStorefront: false,
                 active: true,
+                staticPrice: null,
             },
             isLoading: false,
             typeOptions: [
@@ -47,10 +48,7 @@ Component.register('infoplus-new-customfield', {
                     return;
                 }
                 if (this.customField.type === 'select') {
-                    this.customField.options = this.customField.optionsString
-                        .split(',')
-                        .map(o => o.trim())
-                        .filter(Boolean);
+                    this.customField.options = this.customField.optionsString;
                 } else {
                     this.customField.options = [];
                 }

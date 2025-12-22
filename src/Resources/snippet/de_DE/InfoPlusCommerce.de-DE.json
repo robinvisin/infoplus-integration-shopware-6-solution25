@@ -188,7 +188,9 @@
         "failedToStartSyncCommand": "Synchronisationsbefehl konnte nicht gestartet werden",
         "failedToUpdateCategory": "Kategorie konnte nicht aktualisiert werden",
         "failedToCreateCategory": "Kategorie konnte nicht in InfoPlus erstellt werden",
-        "failedToUpdateCategoryInInfoplus": "Kategorie konnte nicht in InfoPlus aktualisiert werden"
+        "failedToUpdateCategoryInInfoplus": "Kategorie konnte nicht in InfoPlus aktualisiert werden",
+        "countryMappingNotFound": "Land '%iso%' wird derzeit von InfoPlus nicht unterstützt. (Kunde: %customerId%)",
+        "usStateMappingNotFound": "US-Bundesstaat '%state%' wird derzeit von InfoPlus nicht unterstützt. (Kunde: %customerId%)"
       }
     },
     "notifications": {

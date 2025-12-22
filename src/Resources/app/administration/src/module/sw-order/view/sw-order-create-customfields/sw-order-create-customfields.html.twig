@@ -46,7 +46,7 @@
                         <sw-single-select
                             :label="field.label"
                             :required="field.isRequired"
-                            :options="(field.options || []).map(o => ({ label: o, value: o }))"
+                            :options="(field.options || []).map(o => ({ label: ((o && (o.label || o.name)) ? (o.label || o.name) : String(o)) + ((o && o.price != null && o.price !== '') ? ` (+$${o.price})` : ''), value: (o && (o.value || o.label || o.name)) ? (o.value || o.label || o.name) : String(o) }))"
                             v-model:value="item.payload.customFields['infoplus_' + field.technicalName]"
                             @update:value="updateCustomField(item, 'infoplus_' + field.technicalName, $event)"
                             placeholder="Select..."

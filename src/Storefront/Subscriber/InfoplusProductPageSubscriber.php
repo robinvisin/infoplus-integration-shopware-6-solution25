@@ -75,6 +75,7 @@ class InfoplusProductPageSubscriber implements EventSubscriberInterface
                 'type' => $field->getType(),
                 'isRequired' => $field->getIsRequired(),
                 'options' => $field->getOptions(),
+                'staticPrice' => $field->getStaticPrice(),
             ];
         }
 

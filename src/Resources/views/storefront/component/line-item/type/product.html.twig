@@ -1,19 +1,34 @@
 {% sw_extends '@Storefront/storefront/component/line-item/type/product.html.twig' %}
 
-{% block component_line_item_type_product_details_container %}
+{% block component_line_item_type_product_details %}
     {{ parent() }}
-    {% if displayMode is defined and displayMode == 'order' %}
-        {% set infoplus = lineItem.extensions.infoplusCustomFields ?? [] %}
-        {% if infoplus|length > 0 %}
-            <div class="infoplus-order-customfields" style="margin-top: .5rem;">
-                <dl class="row">
-                    {% for f in infoplus %}
-                        <dt class="col-4">{{ f.label }}</dt>
-                        <dd class="col-8">{{ f.value }}</dd>
-                    {% endfor %}
-                </dl>
-            </div>
-        {% endif %}
+    {% set breakdown = lineItem.payload.infoplus_price_breakdown ?? [] %}
+    {% if breakdown is not empty %}
+    {% set currencyIso = context.currency.isoCode %}
+    <div class="infoplus-customfields mt-2">
+        <ul class="list-unstyled infoplus-customfields-list mb-0">
+            {% for row in breakdown %}
+                {% if row.showInStorefront is not same as(false) %}
+                {% set unitDelta = row.priceDelta|default(0) %}
+                {% set totalDelta = unitDelta * lineItem.quantity %}
+                {% set valueDisplay = row.value is iterable ? row.value|json_encode : row.value %}
+                {% set hasPrice = unitDelta != 0 %}
+                {% set isNumericValue = valueDisplay is not empty and (valueDisplay matches '/^\s*\d+(\.\d+)?\s*$/') %}
+                {% set absUnit = unitDelta < 0 ? (unitDelta * -1) : unitDelta %}
+                <li class="infoplus-customfield small" data-infoplus-key="{{ row.technicalName }}">
+                    <span class="infoplus-customfield-label fw-semibold">{{ row.label|sw_sanitize }}:</span>
+                    {% if valueDisplay is not empty and not isNumericValue %}
+                        <span class="infoplus-customfield-original">{{ valueDisplay|sw_sanitize }}</span>
+                    {% endif %}
+                    {% if hasPrice %}
+                        <span class="infoplus-customfield-price text-muted">( {{ lineItem.quantity }} X {{ absUnit|currency(currencyIso) }} )</span>
+                    {% elseif isNumericValue and valueDisplay is not empty %}
+                        <span class="infoplus-customfield-original">{{ valueDisplay|sw_sanitize }}</span>
+                    {% endif %}
+                </li>
+                {% endif %}
+            {% endfor %}
+        </ul>
+    </div>
     {% endif %}
 {% endblock %}
-

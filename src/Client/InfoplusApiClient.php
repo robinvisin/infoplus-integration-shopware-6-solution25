@@ -214,11 +214,11 @@ class InfoplusApiClient
 
     /**
      * @param array<string,mixed> $query
-     * @return array<string,mixed>
+     * @return array<int, array<string,mixed>>
      */
     public function getCarriers(array $query = []): array
     {
-        return $this->get('v3.0/carrier/search', $query) ?? [];
+        return $this->fetchAllPages('v3.0/carrier/search', $query);
     }
 
     /**

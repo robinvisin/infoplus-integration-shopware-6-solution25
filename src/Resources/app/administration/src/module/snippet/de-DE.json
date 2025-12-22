@@ -249,6 +249,8 @@
       "saved": "Benutzerdefiniertes Feld gespeichert.",
       "save": "Speichern",
       "optionsPlaceholder": "Optionen durch Komma getrennt eingeben",
+      "optionsPlaceholderNewline": "Optionen zeilenweise eingeben. Optionalen Preis mit Doppelpunkt hinzufügen. Beispiel:\nFunktion 1: 15\nFunktion 2: 16,5",
+      "staticPriceHelp": "Wenn gesetzt, wird dieser Preis hinzugefügt, wenn das Feld ausgefüllt/ausgewählt ist (gilt auch für Boolean, wenn aktiviert).",
       "columns": {
         "technicalName": "Technischer Name",
         "label": "Bezeichnung",
@@ -257,7 +259,8 @@
         "active": "Aktiv",
         "showInStorefront": "Show for Customer",
         "position": "Position",
-        "options": "Optionen"
+        "options": "Optionen",
+        "staticPrice": "Statischer Preis"
       }
     },
     "shipping": {

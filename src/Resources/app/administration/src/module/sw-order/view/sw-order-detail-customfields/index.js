@@ -30,10 +30,11 @@ Shopware.Component.register('sw-order-detail-customfields', {
             return this.lineItems.map(item => {
                 const customFields = item.payload && item.payload.infoplus_customfields ? item.payload.infoplus_customfields : {};
                 const displayCustomFields = Object.entries(customFields).map(([key, value]) => {
-                    let technicalName = key.startsWith('infoplus_') ? key.replace('infoplus_', '') : key;
-                    let fieldDef = this.infoplusCustomFields.find(f => f.technicalName === technicalName);
-                    let label = fieldDef ? fieldDef.label : technicalName;
-                    return { label, value };
+                    const technicalName = key.startsWith('infoplus_') ? key.replace('infoplus_', '') : key;
+                    const fieldDef = this.infoplusCustomFields.find(f => f.technicalName === technicalName);
+                    const label = fieldDef ? fieldDef.label : technicalName;
+                    const formatted = this.formatValueWithPrice(value, fieldDef);
+                    return { label, value: formatted };
                 });
                 return {
                     ...item,
@@ -81,6 +82,46 @@ Shopware.Component.register('sw-order-detail-customfields', {
                         message: error.message,
                     });
                 });
+        },
+        formatValueWithPrice(value, def) {
+            if (!def) return String(value ?? '');
+            const type = def.type;
+            const base = this.formatScalar(value, type);
+            let suffix = '';
+            if (type === 'select') {
+                const opts = Array.isArray(def.options) ? def.options : [];
+                const matched = opts.find(o => {
+                    const label = (o && (o.label || o.name)) ? (o.label || o.name) : null;
+                    const val = (o && (o.value || label)) ? (o.value || label) : null;
+                    return val !== null && (String(val) === String(value) || String(label) === String(value));
+                });
+                if (matched) {
+                    if (matched.price !== undefined && matched.price !== null && matched.price !== '') {
+                        suffix = ` (+$${matched.price})`;
+                    } else if (def.staticPrice !== undefined && def.staticPrice !== null) {
+                        suffix = ` (+$${def.staticPrice})`;
+                    }
+                }
+            } else {
+                const staticPrice = def.staticPrice;
+                if (staticPrice !== undefined && staticPrice !== null) {
+                    let apply = false;
+                    if (type === 'boolean') {
+                        apply = !!value && String(value) !== '0';
+                    } else {
+                        apply = value !== null && value !== '' && String(value) !== '0';
+                    }
+                    if (apply) suffix = ` (+$${staticPrice})`;
+                }
+            }
+            return `${base}${suffix}`.trim();
+        },
+        formatScalar(value, type) {
+            if (type === 'boolean') {
+                const truthy = (value === true) || String(value) === '1' || value === 1;
+                return truthy ? 'Yes' : 'No';
+            }
+            return String(value ?? '');
         }
     }
 });

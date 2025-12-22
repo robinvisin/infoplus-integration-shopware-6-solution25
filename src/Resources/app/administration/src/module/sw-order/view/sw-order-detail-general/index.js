@@ -64,10 +64,20 @@ Shopware.Component.override('sw-order-detail-general', {
         async syncOrder() {
             const orderId = this.$route.params.id || this.order?.id;
             const transactions = this.order?.transactions || [];
-            const isPaid = transactions.some(transaction => {
-                return transaction.stateMachineState?.technicalName === 'paid';
+
+            const systemConfigApiService = Shopware.Service('systemConfigApiService');
+            const values = await systemConfigApiService.getValues('InfoPlusCommerce');
+            const configuredStates = values['InfoPlusCommerce.config.syncablePaymentStates'];
+
+            const syncablePaymentStates = Array.isArray(configuredStates) && configuredStates.length > 0
+                ? configuredStates
+                : ['open', 'paid', 'authorized'];
+
+            const isSyncable = transactions.some(transaction => {
+                return syncablePaymentStates.includes(transaction.stateMachineState?.technicalName);
             });
-            if (!isPaid) {
+
+            if (!isSyncable) {
                 this.createNotificationError({
                     title: this.$tc('infoplus.common.syncErrorTitle'),
                     message: this.$tc('infoplus.order.errors.paymentNotPaid'),

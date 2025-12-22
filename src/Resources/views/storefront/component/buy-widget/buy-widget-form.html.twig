@@ -4,7 +4,7 @@
 
     {% set infoplusFields = page.extensions.infoplusCustomFields ?? [] %}
     {% if infoplusFields|length > 0 %}
-        <div class="infoplus-customfields-form" style="margin-top: 2rem;">
+        <div id="infoplus-customfields-form" class="infoplus-customfields-form" style="margin-top: 2rem;">
             <h3>{{ 'infoplus.product.customFieldsTitle'|trans }}</h3>
             {% for field in infoplusFields %}
                 <div class="infoplus-customfield" style="margin-bottom: 1rem;">
@@ -13,24 +13,42 @@
                         {% if field.isRequired %}*{% endif %}
                     </label>
                     {% if field.type == 'text' or field.type == 'textarea' %}
-                        <input type="text" name="infoplus_{{ field.technicalName }}" id="infoplus_{{ field.technicalName }}" class="form-control" {% if field.isRequired %}required{% endif %} />
+                        <input type="text" name="infoplus_{{ field.technicalName }}" id="infoplus_{{ field.technicalName }}" class="form-control" data-type="{{ field.type }}" data-static-price="{{ field.staticPrice ?? '' }}" {% if field.isRequired %}required{% endif %} />
                     {% elseif field.type == 'number' %}
-                        <input type="number" name="infoplus_{{ field.technicalName }}" id="infoplus_{{ field.technicalName }}" class="form-control" {% if field.isRequired %}required{% endif %} />
+                        <input type="number" name="infoplus_{{ field.technicalName }}" id="infoplus_{{ field.technicalName }}" class="form-control" data-type="{{ field.type }}" data-static-price="{{ field.staticPrice ?? '' }}" {% if field.isRequired %}required{% endif %} />
                     {% elseif field.type == 'money' %}
-                        <input type="number" name="infoplus_{{ field.technicalName }}" id="infoplus_{{ field.technicalName }}" class="form-control" step="0.1"  {% if field.isRequired %}required{% endif %} />
+                        <input type="number"
+                               name="infoplus_{{ field.technicalName }}"
+                               id="infoplus_{{ field.technicalName }}"
+                               class="form-control"
+                               step="0.01"
+                               min="0"
+                               oninput="if (this.value < 0) this.value = 0;"
+                               data-type="money"
+                               {% if field.isRequired %}required{% endif %} />
                     {% elseif field.type == 'boolean' %}
-                        <input type="hidden" name="infoplus_{{ field.technicalName }}" id="infoplus_{{ field.technicalName }}" value="0" />
-                        <input type="checkbox" name="infoplus_{{ field.technicalName }}" id="infoplus_{{ field.technicalName }}" value="1" />
+                        <input type="hidden" name="infoplus_{{ field.technicalName }}" id="infoplus_{{ field.technicalName }}_hidden" value="0" />
+                        <input type="checkbox" name="infoplus_{{ field.technicalName }}" id="infoplus_{{ field.technicalName }}" value="1" data-type="boolean" data-static-price="{{ field.staticPrice ?? '' }}" />
                     {% elseif field.type == 'select' %}
-                        <select name="infoplus_{{ field.technicalName }}" id="infoplus_{{ field.technicalName }}" class="form-control" {% if field.isRequired %}required{% endif %}>
+                        <select name="infoplus_{{ field.technicalName }}" id="infoplus_{{ field.technicalName }}" class="form-control" data-type="select" data-static-price="{{ field.staticPrice ?? '' }}" {% if field.isRequired %}required{% endif %}>
                             <option value="">{{ 'infoplus.product.selectOption'|trans }}</option>
                             {% for opt in field.options %}
-                                <option value="{{ opt }}">{{ opt }}</option>
+                                {% set label = opt.label ?? opt.name ?? opt %}
+                                {% set value = opt.value ?? label %}
+                                {% set price = opt.price is not null ? opt.price : null %}
+                                <option value="{{ value }}" {% if price is not null %}data-price="{{ price }}"{% endif %}>
+                                    {{ label }}{% if price is not null %} (+${{ price }}){% endif %}
+                                </option>
                             {% endfor %}
                         </select>
                     {% endif %}
                 </div>
             {% endfor %}
+            <div id="infoplus-price-preview"
+                 data-base-unit-price="{{ page.product.calculatedPrice.unitPrice }}"
+                 data-product-name="{{ page.product.translated.name }}"
+                 data-currency="{{ context.currency.isoCode }}"
+                 style="margin-top: .5rem; font-weight: 600;"></div>
         </div>
     {% endif %}
     {{ parent() }}

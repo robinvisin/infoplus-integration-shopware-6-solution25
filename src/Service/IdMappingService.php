@@ -13,6 +13,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Aggregation\Metric\MaxAggregation;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\AggregationResult\Metric\MaxResult;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsAnyFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\OrFilter;
 use Shopware\Core\Framework\Uuid\Uuid;
@@ -25,7 +26,8 @@ class IdMappingService
      */
     public function __construct(
         private readonly EntityRepository $idMappingRepository,
-        private readonly EntityRepository $orderSyncRepository
+        private readonly EntityRepository $orderSyncRepository,
+        private readonly ConfigService $configService
     ) {
     }
 
@@ -288,9 +290,10 @@ class IdMappingService
         if ($id !== null) {
             $criteria->addFilter(new EqualsFilter('shopwareOrderId', $id));
         }
+
         $criteria->addFilter(
             new EqualsFilter('orderShippingStatus', 'open'),
-            new EqualsFilter('orderPaymentStatus', 'paid')
+            new EqualsAnyFilter('orderPaymentStatus', $this->configService->getSyncablePaymentStates())
         );
 
         return $this->orderSyncRepository->search($criteria, $context)->getElements();

@@ -35,6 +35,8 @@
         <service id="InfoPlusCommerce\Controller\AdminSyncController" public="true">
             <argument type="service" id="InfoPlusCommerce\Service\SyncService"/>
             <argument type="service" id="translator"/>
+            <argument type="service" id="state_machine.repository"/>
+            <argument type="service" id="state_machine_state.repository"/>
             <tag name="controller.service_arguments"/>
             <call method="setContainer">
                 <argument type="service" id="service_container"/>
@@ -62,6 +64,7 @@
         <service id="InfoPlusCommerce\Service\IdMappingService">
             <argument type="service" id="infoplus_id_mapping.repository" />
             <argument type="service" id="infoplus_order_sync.repository" />
+            <argument type="service" id="InfoPlusCommerce\Service\ConfigService" />
         </service>
 
         <!-- Rate limiter storage -->
@@ -138,17 +141,15 @@
 
         <service id="InfoPlusCommerce\Core\Content\InfoplusFieldDefinition\InfoplusFieldDefinitionEntity" autowire="true" autoconfigure="true"/>
         <service id="InfoPlusCommerce\Core\Content\InfoplusFieldDefinition\InfoplusFieldDefinitionCollection" autowire="true" autoconfigure="true"/>
-        <service id="InfoPlusCommerce\Core\Content\InfoplusFieldDefinition\InfoplusFieldDefinitionDefinition" autowire="true" autoconfigure="true"/>
+        <service id="InfoPlusCommerce\Core\Content\InfoplusFieldDefinition\InfoplusFieldDefinitionDefinition" autowire="true" autoconfigure="true">
+            <tag name="shopware.entity.definition" entity="infoplus_field_definition"/>
+        </service>
 
         <service id="InfoPlusCommerce\Storefront\Subscriber\InfoplusProductPageSubscriber">
             <argument type="service" id="infoplus_field_definition.repository"/>
             <tag name="kernel.event_subscriber"/>
         </service>
 
-        <service id="InfoPlusCommerce\Storefront\Subscriber\InfoplusCartSubscriber">
-            <argument type="service" id="request_stack"/>
-            <tag name="kernel.event_subscriber"/>
-        </service>
 
         <service id="InfoPlusCommerce\Subscriber\InfoplusOrderPlacedSubscriber">
             <argument type="service" id="order_line_item.repository"/>
@@ -161,5 +162,20 @@
             <argument type="service" id="infoplus_field_definition.repository"/>
             <tag name="kernel.event_subscriber"/>
         </service>
+
+        <service id="InfoPlusCommerce\Cart\Processor\InfoplusCustomFieldPriceProcessor" class="InfoPlusCommerce\Cart\Processor\InfoplusCustomFieldPriceProcessor" autowire="true" autoconfigure="true">
+            <tag name="shopware.cart.processor" priority="4901" />
+        </service>
+
+        <service id="InfoPlusCommerce\Storefront\Route\InfoplusCartItemAddRoute" decorates="Shopware\Core\Checkout\Cart\SalesChannel\CartItemAddRoute" public="true">
+            <argument type="service" id="InfoPlusCommerce\Storefront\Route\InfoplusCartItemAddRoute.inner"/>
+            <tag name="controller.service_arguments"/>
+        </service>
+
+        <service id="InfoPlusCommerce\Storefront\Route\InfoplusCartItemUpdateRoute" decorates="Shopware\Core\Checkout\Cart\SalesChannel\CartItemUpdateRoute" public="true">
+            <argument type="service" id="InfoPlusCommerce\Storefront\Route\InfoplusCartItemUpdateRoute.inner"/>
+            <tag name="controller.service_arguments"/>
+        </service>
+
     </services>
 </container>

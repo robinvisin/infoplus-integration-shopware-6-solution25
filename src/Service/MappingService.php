@@ -6,9 +6,6 @@ namespace InfoPlusCommerce\Service;
 
 class MappingService
 {
-    private const DEFAULT_COUNTRY = 'GERMANY';
-    private const DEFAULT_STATE = '';
-
     /** @var array<string,string> */
     private const COUNTRY_MAP = [
         'AF' => 'AFGHANISTAN', 'AX' => 'ALAND ISLANDS', 'AL' => 'ALBANIA', 'DZ' => 'ALGERIA', 'AS' => 'AMERICAN SAMOA',
@@ -71,15 +68,15 @@ class MappingService
         'US-WA' => 'Washington', 'US-WV' => 'West Virginia', 'US-WI' => 'Wisconsin', 'US-WY' => 'Wyoming'
     ];
 
-    public static function mapIsoToInfoplusCountry(string $isoCode): string
+    public static function mapIsoToInfoplusCountry(string $isoCode): string | null
     {
         $key = strtoupper(trim($isoCode));
-        return self::COUNTRY_MAP[$key] ?? self::DEFAULT_COUNTRY;
+        return self::COUNTRY_MAP[$key] ?? null;
     }
 
-    public static function mapIsoToInfoplusUsState(string $isoCode): string
+    public static function mapIsoToInfoplusUsState(string $isoCode): string | null
     {
         $key = strtoupper(trim($isoCode));
-        return self::US_STATE_MAP[$key] ?? self::DEFAULT_STATE;
+        return self::US_STATE_MAP[$key] ?? null;
     }
 }

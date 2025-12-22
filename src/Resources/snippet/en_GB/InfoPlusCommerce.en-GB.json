@@ -13,7 +13,10 @@
       "categorySettings": "Infoplus Categories",
       "subCategorySettings": "Infoplus Sub Categories",
       "logInfo": "Log Info",
-      "customFieldSettings": "Custom Field Settings"
+      "customFieldSettings": "Custom Field Settings",
+      "syncablePaymentStatesLabel": "Syncable payment statuses",
+      "syncablePaymentStatesHelp": "Select which order payment statuses (transaction state technical names) should be eligible for Infoplus order sync.",
+      "save": "Save"
     },
     "category": {
       "editTitle": "Edit Category",
@@ -71,7 +74,7 @@
       "syncing": "Syncing order with Infoplus...",
       "syncedAtPrefix": "Order synced at",
       "errors": {
-        "paymentNotPaid": "Order payment status is not \"paid\". Only paid orders can be synced.",
+        "paymentNotPaid": "Order payment status is not eligible for syncing.",
         "missingId": "Order ID is not available for syncing.",
         "failedToGetData": "Failed to get data:",
         "failedToSync": "Failed to sync order:",
@@ -188,7 +191,9 @@
         "failedToStartSyncCommand": "Failed to start sync command",
         "failedToUpdateCategory": "Failed to update category",
         "failedToCreateCategory": "Failed to create category in InfoPlus",
-        "failedToUpdateCategoryInInfoplus": "Failed to update category in InfoPlus"
+        "failedToUpdateCategoryInInfoplus": "Failed to update category in InfoPlus",
+        "countryMappingNotFound": "Country '%iso%' is currently not supported by InfoPlus.(customer: %customerId%)",
+        "usStateMappingNotFound": "US state '%state%' is currently not supported by InfoPlus. (customer: %customerId%)"
       }
     },
     "notifications": {

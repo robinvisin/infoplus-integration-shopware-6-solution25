@@ -191,6 +191,7 @@ class ProductSyncService
                 'seasonalItem' => 'No',
                 'secure' => 'No',
                 'unitCode' => 'PKG',
+                'sellPrice' => $product->getPrice()->first()?->getGross() ?? 0.0,
                 'forwardLotMixingRule' => 'SKU',
                 'storageLotMixingRule' => 'SKU',
                 'forwardItemMixingRule' => 'Single',

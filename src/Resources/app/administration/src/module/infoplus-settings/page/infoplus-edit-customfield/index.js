@@ -16,6 +16,7 @@ Component.register('infoplus-edit-customfield', {
                 position: 0,
                 showInStorefront: false,
                 active: true,
+                staticPrice: null,
             },
             isLoading: false,
             typeOptions: [
@@ -44,15 +45,24 @@ Component.register('infoplus-edit-customfield', {
                 });
                 if (!response.ok) throw new Error('Failed to load custom field');
                 const field = await response.json();
+                let optionsString = '';
+                if (Array.isArray(field.options)) {
+                    optionsString = field.options.map(o => {
+                        const label = (o && (o.label || o.name)) ? (o.label || o.name) : String(o || '');
+                        const price = (o && (o.price !== undefined && o.price !== null)) ? o.price : null;
+                        return price !== null && price !== '' ? `${label}: ${price}` : label;
+                    }).join('\n');
+                }
                 this.customField = {
                     technicalName: field.technicalName || '',
                     label: field.label || '',
                     type: field.type || 'text',
                     isRequired: field.isRequired || false,
-                    optionsString: Array.isArray(field.options) ? field.options.join(', ') : '',
+                    optionsString,
                     position: typeof field.position === 'number' ? field.position : 0,
-                    showInStorefront: field.showInStorefront || false,
+                    showInStorefront: !!field.showInStorefront,
                     active: typeof field.active === 'boolean' ? field.active : true,
+                    staticPrice: field.staticPrice ?? null,
                 };
             } catch (e) {
                 this.createNotificationError({
@@ -81,10 +91,7 @@ Component.register('infoplus-edit-customfield', {
                     return;
                 }
                 if (this.customField.type === 'select') {
-                    this.customField.options = this.customField.optionsString
-                        .split(',')
-                        .map(o => o.trim())
-                        .filter(Boolean);
+                    this.customField.options = this.customField.optionsString;
                 } else {
                     this.customField.options = [];
                 }

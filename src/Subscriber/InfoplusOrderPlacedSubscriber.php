@@ -45,12 +45,13 @@ class InfoplusOrderPlacedSubscriber implements EventSubscriberInterface
             if (!\is_array($payloadCustomFields) || empty($payloadCustomFields)) {
                 continue;
             }
-            // merge into existing customFields
-            $current = $lineItem->getCustomFields() ?? [];
-            $merged = array_merge($current, $payloadCustomFields);
+
+            $currentCustom = $lineItem->getCustomFields() ?? [];
+            $mergedCustom = array_merge($currentCustom, $payloadCustomFields);
+
             $updates[] = [
                 'id' => $lineItem->getId(),
-                'customFields' => $merged,
+                'customFields' => $mergedCustom,
             ];
         }
 

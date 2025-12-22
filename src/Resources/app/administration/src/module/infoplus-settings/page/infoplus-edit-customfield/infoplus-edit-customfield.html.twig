@@ -27,7 +27,7 @@
                         <sw-textarea-field
                                 :label="$tc('infoplus.customfield.columns.options')"
                                 v-model:value="customField.optionsString"
-                                :placeholder="$tc('infoplus.customfield.optionsPlaceholder')"
+                                :placeholder="$tc('infoplus.customfield.optionsPlaceholderNewline')"
                         />
                     </template>
                     <sw-switch-field
@@ -37,6 +37,12 @@
                         :label="$tc('infoplus.customfield.columns.position')"
                         v-model:value="customField.position"
                         :required="false"
+                    />
+                    <sw-number-field
+                        :label="$tc('infoplus.customfield.columns.staticPrice')"
+                        v-model:value="customField.staticPrice"
+                        :digits="2"
+                        :placeholder="$tc('infoplus.customfield.staticPriceHelp')"
                     />
                     <sw-switch-field
                         :label="$tc('infoplus.customfield.columns.active')"
