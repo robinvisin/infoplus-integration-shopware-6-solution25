@@ -13,7 +13,13 @@
       "categorySettings": "InfoPlus Kategorien",
       "subCategorySettings": "InfoPlus Unterkategorien",
       "logInfo": "Log Info",
-      "customFieldSettings": "Benutzerdefinierte Felder"
+      "customFieldSettings": "Benutzerdefinierte Felder",
+      "syncableOrderStatesLabel": "Synchronisierbare Bestellstatus",
+      "syncableOrderStatesHelp": "Wählen Sie aus, welche Bestellstatus (technische Namen des Bestell-Status) für die Infoplus-Bestellsynchronisierung zulässig sind.",
+      "syncablePaymentStatesLabel": "Synchronisierbare Zahlungsstatus",
+      "syncablePaymentStatesHelp": "Wählen Sie aus, welche Zahlungsstatus (technische Namen des Zahlungsstatus) für die Infoplus-Bestellsynchronisierung zulässig sind.",
+      "save": "Speichern",
+      "syncableStatusesSectionTitle": "Status-Filter für Bestellsynchronisation"
     },
     "category": {
       "editTitle": "Kategorie bearbeiten",
@@ -75,7 +81,8 @@
         "missingId": "Bestell-ID ist für die Synchronisierung nicht verfügbar.",
         "failedToGetData": "Daten konnten nicht abgerufen werden:",
         "failedToSync": "Bestellung konnte nicht synchronisiert werden:",
-        "failedToRetrieveInfo": "Infoplus-Informationen für die Bestellung konnten nicht abgerufen werden."
+        "failedToRetrieveInfo": "Infoplus-Informationen für die Bestellung konnten nicht abgerufen werden.",
+        "orderStateNotEligible": "Der Bestellstatus ist nicht für die Synchronisierung zulässig."
       }
     },
     "customer": {

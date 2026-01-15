@@ -17,7 +17,9 @@ Component.register('infoplus-sync-settings', {
                 warehouseId: ''
             },
             paymentStateOptions: [],
-            syncablePaymentStates: []
+            orderStateOptions: [],
+            syncablePaymentStates: [],
+            syncableOrderStates: [],
         };
     },
     created() {
@@ -25,6 +27,7 @@ Component.register('infoplus-sync-settings', {
         this.httpClient = Shopware.Application.getContainer('init').httpClient;
         this.loadConfig();
         this.loadPaymentStates();
+        this.loadOrderStates();
     },
     methods: {
         async loadPaymentStates() {
@@ -45,6 +48,26 @@ Component.register('infoplus-sync-settings', {
                 });
             }
         },
+
+        async loadOrderStates() {
+            try {
+                const response = await this.httpClient.get('/_action/infoplus/order-states', {
+                    headers: {
+                        Authorization: `Bearer ${Shopware.Context.api.authToken.access}`,
+                    }
+                });
+
+                const items = response?.data?.data || [];
+                this.orderStateOptions = items.map(i => ({ value: i.id, label: i.name }));
+            } catch (e) {
+                this.orderStateOptions = [];
+                this.createNotificationError({
+                    title: this.$tc('infoplus.common.syncErrorTitle'),
+                    message: `Failed to load order states: ${e.message}`,
+                });
+            }
+        },
+
         loadConfig() {
             this.isLoading = true;
             this.systemConfigApiService.getValues('InfoPlusCommerce').then(values => {
@@ -52,6 +75,7 @@ Component.register('infoplus-sync-settings', {
                 this.config.baseDomain = values['InfoPlusCommerce.config.baseDomain'] || '';
                 this.config.warehouseId = values['InfoPlusCommerce.config.warehouseId'] || '';
                 this.syncablePaymentStates = values['InfoPlusCommerce.config.syncablePaymentStates'] || [];
+                this.syncableOrderStates = values['InfoPlusCommerce.config.syncableOrderStates'] || [];
                 this.isLoading = false;
             });
         },
@@ -61,7 +85,8 @@ Component.register('infoplus-sync-settings', {
                 'InfoPlusCommerce.config.apiKey': this.config.apiKey,
                 'InfoPlusCommerce.config.baseDomain': this.config.baseDomain,
                 'InfoPlusCommerce.config.warehouseId': this.config.warehouseId,
-                'InfoPlusCommerce.config.syncablePaymentStates': this.syncablePaymentStates
+                'InfoPlusCommerce.config.syncablePaymentStates': this.syncablePaymentStates,
+                'InfoPlusCommerce.config.syncableOrderStates': this.syncableOrderStates,
             };
             this.systemConfigApiService.saveValues(configValues).finally(() => {
                 this.isLoading = false;

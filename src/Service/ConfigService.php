@@ -10,8 +10,8 @@ class ConfigService
 {
     private const CONFIG_DOMAIN = 'InfoPlusCommerce.config.';
 
-
     private const DEFAULT_SYNCABLE_PAYMENT_STATES = ['open', 'paid', 'authorized'];
+    private const DEFAULT_SYNCABLE_ORDER_STATES = ['open'];
 
     public function __construct(private readonly SystemConfigService $systemConfigService)
     {
@@ -77,5 +77,27 @@ class ConfigService
         }, $value)));
 
         return $states !== [] ? $states : self::DEFAULT_SYNCABLE_PAYMENT_STATES;
+    }
+
+    /**
+     * @return list<string>
+     */
+    public function getSyncableOrderStates(): array
+    {
+        $value = $this->get('syncableOrderStates');
+
+        if (!\is_array($value)) {
+            return self::DEFAULT_SYNCABLE_ORDER_STATES;
+        }
+
+        $states = array_values(array_filter(array_map(static function ($v): ?string {
+            if (!\is_string($v)) {
+                return null;
+            }
+            $v = trim($v);
+            return $v !== '' ? $v : null;
+        }, $value)));
+
+        return $states !== [] ? $states : self::DEFAULT_SYNCABLE_ORDER_STATES;
     }
 }

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace InfoPlusCommerce\Client;
 
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\RequestException;
 use InfoPlusCommerce\Service\ConfigService;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\RateLimiter\LimiterInterface;
@@ -73,13 +74,15 @@ class InfoplusApiClient
 
     private function consumeRateLimit(): void
     {
-        $waited = false;
-        if (!$this->userLimiter->consume(1)->isAccepted()) {
-            $this->userLimiter->consume(1)->wait();
-            $waited = true;
+
+        $user = $this->userLimiter->consume(1);
+        if (!$user->isAccepted()) {
+            $user->wait();
         }
-        if (!$waited && !$this->domainLimiter->consume(1)->isAccepted()) {
-            $this->domainLimiter->consume(1)->wait();
+
+        $domain = $this->domainLimiter->consume(1);
+        if (!$domain->isAccepted()) {
+            $domain->wait();
         }
     }
 
@@ -89,56 +92,95 @@ class InfoplusApiClient
      */
     private function requestWithRetry(string $method, string $endpoint, array $options = [], int $maxAttempts = 3): array|string
     {
+        $method = strtoupper($method);
         $attempt = 1;
-        $delay = 1000000; // 1 second in microseconds
+
+        $baseDelayUs = 1_000_000; // 1s
+        $maxDelayUs = 10_000_000; // 10s
 
         while ($attempt <= $maxAttempts) {
             try {
                 $this->consumeRateLimit();
+
                 $headers = $this->getHeaders();
                 $options['headers'] = array_merge($options['headers'] ?? [], $headers);
+
                 $response = $this->httpClient->request($method, $endpoint, $options);
                 $body = $response->getBody()->getContents();
+
                 $this->logger->info("[Infoplus $method]", [
                     'endpoint' => $endpoint,
                     'options' => $options,
-                    'response' => $body
+                    'response' => $body,
+                    'statusCode' => $response->getStatusCode(),
                 ]);
-                return json_decode($body, true);
+
+                /** @var array<string,mixed>|null $decoded */
+                $decoded = json_decode($body, true);
+
+                return $decoded ?? [];
             } catch (Throwable $e) {
-                if ($attempt < $maxAttempts) {
-                    $this->logger->warning('[Infoplus API] Rate limit exceeded, retrying...', [
-                        'endpoint' => $endpoint,
-                        'method' => $method,
-                        'attempt' => $attempt,
-                        'message' => $e->getMessage(),
-                        'delay' => $delay / 1000000 . ' seconds'
-                    ]);
-                    usleep((int) $delay);
-                    $delay = (int) ($delay * 1.5); // Increase delay for next attempt
-                    $attempt++;
-                    continue;
+                $statusCode = null;
+                $retryAfterUs = null;
+
+                if ($e instanceof RequestException && $e->hasResponse()) {
+                    $statusCode = $e->getResponse()->getStatusCode();
+
+                    $retryAfterHeader = $e->getResponse()->getHeaderLine('Retry-After');
+                    if ($retryAfterHeader !== '') {
+                        if (preg_match('/^\d+$/', $retryAfterHeader) === 1) {
+                            $retryAfterUs = (int) $retryAfterHeader * 1_000_000;
+                        } else {
+                            $retryAt = strtotime($retryAfterHeader);
+                            if ($retryAt !== false) {
+                                $seconds = max(0, $retryAt - time());
+                                $retryAfterUs = (int) $seconds * 1_000_000;
+                            }
+                        }
+                    }
                 }
-                if ($attempt === $maxAttempts) {
-                    $this->logger->error('[Infoplus API] Max retry attempts reached', [
+
+                $isRateLimit = ($statusCode === 429);
+                $isServerError = ($statusCode !== null && $statusCode >= 500);
+                $shouldRetry = $isRateLimit || $isServerError;
+
+                if (!$shouldRetry || $attempt >= $maxAttempts) {
+                    $this->logger->error('[Infoplus API] Request failed', [
                         'endpoint' => $endpoint,
                         'method' => $method,
                         'attempt' => $attempt,
-                        'message' => $e->getMessage()
+                        'maxAttempts' => $maxAttempts,
+                        'statusCode' => $statusCode,
+                        'message' => $e->getMessage(),
                     ]);
+
                     return $e->getMessage();
                 }
-                $this->logger->warning('[Infoplus API] Retry attempt ' . $attempt, [
+
+                $expDelayUs = (int) min($maxDelayUs, $baseDelayUs * (2 ** ($attempt - 1)));
+                $jitterUs = random_int(0, 250_000);
+
+                $delayUs = $expDelayUs + $jitterUs;
+                if ($retryAfterUs !== null) {
+                    $delayUs = max($delayUs, $retryAfterUs);
+                }
+
+                $this->logger->warning('[Infoplus API] Transient error, retrying...', [
                     'endpoint' => $endpoint,
                     'method' => $method,
-                    'message' => $e->getMessage()
+                    'attempt' => $attempt,
+                    'nextAttempt' => $attempt + 1,
+                    'statusCode' => $statusCode,
+                    'delaySeconds' => $delayUs / 1_000_000,
+                    'message' => $e->getMessage(),
                 ]);
-                usleep((int) $delay);
-                $delay = (int) ($delay * 1.5);
+
+                usleep($delayUs);
                 $attempt++;
             }
         }
-        return "Limit exceeded after $maxAttempts attempts";
+
+        return "Request failed after $maxAttempts attempts";
     }
 
     /**
@@ -214,7 +256,7 @@ class InfoplusApiClient
 
     /**
      * @param array<string,mixed> $query
-     * @return array<int, array<string,mixed>>
+     * @return array<int, array<string, mixed>>
      */
     public function getCarriers(array $query = []): array
     {

@@ -11,18 +11,27 @@
             <infoplus-switch :label="$tc('infoplus.syncInventory')"
                              name="InfoPlusCommerce.config.syncInventory"/>
             <infoplus-switch :label="$tc('infoplus.syncOrders')" name="InfoPlusCommerce.config.syncOrders"/>
-            <div style="margin-top: 16px; display: flex; gap: 12px; align-items: center;">
+
+
+            <hr style="margin: 24px 0; border: 0; border-top: 1px solid #d1d9e0;" />
+            <div>
                 <sw-multi-select
                         v-model:value="syncablePaymentStates"
                         :label="$tc('infoplus.settings.syncablePaymentStatesLabel')"
                         :help-text="$tc('infoplus.settings.syncablePaymentStatesHelp')"
                         :options="paymentStateOptions"
-                        style="margin-top: 16px;"
                 />
-                <sw-button variant="primary" @click="saveConfig">
+                <sw-multi-select
+                        v-model:value="syncableOrderStates"
+                        :label="$tc('infoplus.settings.syncableOrderStatesLabel')"
+                        :help-text="$tc('infoplus.settings.syncableOrderStatesHelp')"
+                        :options="orderStateOptions"
+                />
+                <sw-button variant="primary" @click="saveConfig" >
                     {{ $tc('infoplus.settings.save') }}
                 </sw-button>
             </div>
+            <hr style="margin: 24px 0; border: 0; border-top: 1px solid #d1d9e0;" />
             <sync-button/>
         </sw-card>
     </sw-container>

@@ -16,6 +16,9 @@
       "customFieldSettings": "Custom Field Settings",
       "syncablePaymentStatesLabel": "Syncable payment statuses",
       "syncablePaymentStatesHelp": "Select which order payment statuses (transaction state technical names) should be eligible for Infoplus order sync.",
+      "syncableOrderStatesLabel": "Syncable order statuses",
+      "syncableOrderStatesHelp": "Select which order statuses (order state technical names) should be eligible for Infoplus order sync.",
+      "syncableStatusesSectionTitle": "Order sync status filters",
       "save": "Save"
     },
     "category": {
@@ -80,7 +83,8 @@
         "missingId": "Order ID is not available for syncing.",
         "failedToGetData": "Failed to get data:",
         "failedToSync": "Failed to sync order:",
-        "failedToRetrieveInfo": "Failed to retrieve Infoplus information for the order."
+        "failedToRetrieveInfo": "Failed to retrieve Infoplus information for the order.",
+        "orderStateNotEligible": "Order status is not eligible for syncing."
       }
     },
     "customer": {

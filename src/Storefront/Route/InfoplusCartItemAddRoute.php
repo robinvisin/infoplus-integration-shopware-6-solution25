@@ -29,10 +29,15 @@ class InfoplusCartItemAddRoute extends AbstractCartItemAddRoute
     public function add(Request $request, Cart $cart, SalesChannelContext $context, ?array $items): CartResponse
     {
         $postAll = $request->request->all();
-        // @phpstan-ignore-next-line
+        /* @phpstan-ignore-next-line  */
         if (empty($postAll) && !empty($_POST)) {
-            // @phpstan-ignore-next-line
-            $postAll = $_POST;
+            /**
+             * Legacy fallback for some edge proxies that bypass Symfony request parsing.
+             * @var array<string,mixed> $legacyPost
+             */
+            /* @phpstan-ignore-next-line  */
+            $legacyPost = $_POST;
+            $postAll = $legacyPost;
         }
         if (empty($postAll)) {
             try {

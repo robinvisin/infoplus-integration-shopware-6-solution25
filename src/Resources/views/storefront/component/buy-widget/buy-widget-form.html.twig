@@ -13,9 +13,15 @@
                         {% if field.isRequired %}*{% endif %}
                     </label>
                     {% if field.type == 'text' or field.type == 'textarea' %}
-                        <input type="text" name="infoplus_{{ field.technicalName }}" id="infoplus_{{ field.technicalName }}" class="form-control" data-type="{{ field.type }}" data-static-price="{{ field.staticPrice ?? '' }}" {% if field.isRequired %}required{% endif %} />
+                        <input type="text" name="infoplus_{{ field.technicalName }}"
+                               id="infoplus_{{ field.technicalName }}" class="form-control" data-type="{{ field.type }}"
+                               data-static-price="{{ field.staticPrice ?? '' }}"
+                               {% if field.isRequired %}required{% endif %} />
                     {% elseif field.type == 'number' %}
-                        <input type="number" name="infoplus_{{ field.technicalName }}" id="infoplus_{{ field.technicalName }}" class="form-control" data-type="{{ field.type }}" data-static-price="{{ field.staticPrice ?? '' }}" {% if field.isRequired %}required{% endif %} />
+                        <input type="number" name="infoplus_{{ field.technicalName }}"
+                               id="infoplus_{{ field.technicalName }}" class="form-control" data-type="{{ field.type }}"
+                               data-static-price="{{ field.staticPrice ?? '' }}"
+                               {% if field.isRequired %}required{% endif %} />
                     {% elseif field.type == 'money' %}
                         <input type="number"
                                name="infoplus_{{ field.technicalName }}"
@@ -27,16 +33,23 @@
                                data-type="money"
                                {% if field.isRequired %}required{% endif %} />
                     {% elseif field.type == 'boolean' %}
-                        <input type="hidden" name="infoplus_{{ field.technicalName }}" id="infoplus_{{ field.technicalName }}_hidden" value="0" />
-                        <input type="checkbox" name="infoplus_{{ field.technicalName }}" id="infoplus_{{ field.technicalName }}" value="1" data-type="boolean" data-static-price="{{ field.staticPrice ?? '' }}" />
+                        <input type="hidden" name="infoplus_{{ field.technicalName }}"
+                               id="infoplus_{{ field.technicalName }}_hidden" value="0"/>
+                        <input type="checkbox" name="infoplus_{{ field.technicalName }}"
+                               id="infoplus_{{ field.technicalName }}" value="1" data-type="boolean"
+                               data-static-price="{{ field.staticPrice ?? '' }}"/>
                     {% elseif field.type == 'select' %}
-                        <select name="infoplus_{{ field.technicalName }}" id="infoplus_{{ field.technicalName }}" class="form-control" data-type="select" data-static-price="{{ field.staticPrice ?? '' }}" {% if field.isRequired %}required{% endif %}>
+                        <select name="infoplus_{{ field.technicalName }}" id="infoplus_{{ field.technicalName }}"
+                                class="form-control" data-type="select"
+                                data-static-price="{{ field.staticPrice ?? '' }}"
+                                {% if field.isRequired %}required{% endif %}>
                             <option value="">{{ 'infoplus.product.selectOption'|trans }}</option>
                             {% for opt in field.options %}
                                 {% set label = opt.label ?? opt.name ?? opt %}
                                 {% set value = opt.value ?? label %}
                                 {% set price = opt.price is not null ? opt.price : null %}
-                                <option value="{{ value }}" {% if price is not null %}data-price="{{ price }}"{% endif %}>
+                                <option value="{{ value }}"
+                                        {% if price is not null %}data-price="{{ price }}"{% endif %}>
                                     {{ label }}{% if price is not null %} (+${{ price }}){% endif %}
                                 </option>
                             {% endfor %}

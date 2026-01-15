@@ -67,23 +67,38 @@ Shopware.Component.override('sw-order-detail-general', {
 
             const systemConfigApiService = Shopware.Service('systemConfigApiService');
             const values = await systemConfigApiService.getValues('InfoPlusCommerce');
-            const configuredStates = values['InfoPlusCommerce.config.syncablePaymentStates'];
 
-            const syncablePaymentStates = Array.isArray(configuredStates) && configuredStates.length > 0
-                ? configuredStates
+            const configuredPaymentStates = values['InfoPlusCommerce.config.syncablePaymentStates'];
+            const syncablePaymentStates = Array.isArray(configuredPaymentStates) && configuredPaymentStates.length > 0
+                ? configuredPaymentStates
                 : ['open', 'paid', 'authorized'];
 
-            const isSyncable = transactions.some(transaction => {
+            const configuredOrderStates = values['InfoPlusCommerce.config.syncableOrderStates'];
+            const syncableOrderStates = Array.isArray(configuredOrderStates) && configuredOrderStates.length > 0
+                ? configuredOrderStates
+                : ['open'];
+
+            const isPaymentSyncable = transactions.some(transaction => {
                 return syncablePaymentStates.includes(transaction.stateMachineState?.technicalName);
             });
 
-            if (!isSyncable) {
+            if (!isPaymentSyncable) {
                 this.createNotificationError({
                     title: this.$tc('infoplus.common.syncErrorTitle'),
                     message: this.$tc('infoplus.order.errors.paymentNotPaid'),
                 });
                 return;
             }
+
+            const orderState = this.order?.stateMachineState?.technicalName;
+            if (!orderState || !syncableOrderStates.includes(orderState)) {
+                this.createNotificationError({
+                    title: this.$tc('infoplus.common.syncErrorTitle'),
+                    message: this.$tc('infoplus.order.errors.orderStateNotEligible'),
+                });
+                return;
+            }
+
             if (!orderId) {
                 this.createNotificationError({
                     title: this.$tc('infoplus.common.syncErrorTitle'),

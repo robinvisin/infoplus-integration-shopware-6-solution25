@@ -84,6 +84,12 @@ class OrderSyncService
             )
         );
 
+        $criteria->addFilter(
+            new EqualsAnyFilter(
+                'stateMachineState.technicalName',
+                $this->configService->getSyncableOrderStates()
+            )
+        );
 
         $orders = $this->orderRepository->search($criteria, $context)->getEntities();
 

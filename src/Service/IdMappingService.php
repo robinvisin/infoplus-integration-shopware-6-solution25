@@ -293,7 +293,8 @@ class IdMappingService
 
         $criteria->addFilter(
             new EqualsFilter('orderShippingStatus', 'open'),
-            new EqualsAnyFilter('orderPaymentStatus', $this->configService->getSyncablePaymentStates())
+            new EqualsAnyFilter('orderPaymentStatus', $this->configService->getSyncablePaymentStates()),
+            new EqualsAnyFilter('orderStatus', $this->configService->getSyncableOrderStates())
         );
 
         return $this->orderSyncRepository->search($criteria, $context)->getElements();

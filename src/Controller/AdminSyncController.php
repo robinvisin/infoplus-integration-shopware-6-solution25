@@ -16,6 +16,8 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
+use Shopware\Core\System\StateMachine\Aggregation\StateMachineState\StateMachineStateEntity;
+use Shopware\Core\System\StateMachine\StateMachineEntity;
 
 #[Route(defaults: ['_routeScope' => ['api']])]
 class AdminSyncController extends AbstractController
@@ -388,6 +390,8 @@ class AdminSyncController extends AbstractController
     {
         $machineCriteria = new Criteria();
         $machineCriteria->addFilter(new EqualsFilter('technicalName', 'order_transaction.state'));
+
+        /** @var StateMachineEntity|null $stateMachine */
         $stateMachine = $this->stateMachineRepository->search($machineCriteria, $context)->first();
 
         if (!$stateMachine) {
@@ -396,18 +400,60 @@ class AdminSyncController extends AbstractController
 
         $stateCriteria = new Criteria();
         $stateCriteria->addFilter(new EqualsFilter('stateMachineId', $stateMachine->getId()));
+        $stateCriteria->addAssociation('translations');
 
+        /** @var iterable<StateMachineStateEntity> $states */
         $states = $this->stateMachineStateRepository->search($stateCriteria, $context)->getEntities();
 
+        /** @var array<int,array{id:string,name:string}> $data */
         $data = [];
         foreach ($states as $state) {
+            $label = $state->getTranslated()['name'] ?? null;
+            $technical = $state->getTechnicalName();
+
             $data[] = [
-                'id' => $state->getTechnicalName(),
-                'name' => $state->getTechnicalName(),
+                'id' => $technical,
+                'name' => (\is_string($label) && $label !== '') ? $label : $technical,
             ];
         }
 
-        usort($data, static fn (array $a, array $b) => strcmp((string) $a['name'], (string) $b['name']));
+        usort($data, static fn (array $a, array $b): int => strcmp($a['name'], $b['name']));
+        return new JsonResponse(['data' => $data]);
+    }
+
+    #[Route(path: '/api/_action/infoplus/order-states', name: 'api.infoplus.orderStates', methods: ['GET'])]
+    public function getOrderStates(Context $context): JsonResponse
+    {
+        $machineCriteria = new Criteria();
+        $machineCriteria->addFilter(new EqualsFilter('technicalName', 'order.state'));
+
+        /** @var StateMachineEntity|null $stateMachine */
+        $stateMachine = $this->stateMachineRepository->search($machineCriteria, $context)->first();
+
+        if (!$stateMachine) {
+            return new JsonResponse(['data' => []]);
+        }
+
+        $stateCriteria = new Criteria();
+        $stateCriteria->addFilter(new EqualsFilter('stateMachineId', $stateMachine->getId()));
+        $stateCriteria->addAssociation('translations');
+
+        /** @var iterable<StateMachineStateEntity> $states */
+        $states = $this->stateMachineStateRepository->search($stateCriteria, $context)->getEntities();
+
+        /** @var array<int,array{id:string,name:string}> $data */
+        $data = [];
+        foreach ($states as $state) {
+            $label = $state->getTranslated()['name'] ?? null;
+            $technical = $state->getTechnicalName();
+
+            $data[] = [
+                'id' => $technical,
+                'name' => (\is_string($label) && $label !== '') ? $label : $technical,
+            ];
+        }
+
+        usort($data, static fn (array $a, array $b): int => strcmp($a['name'], $b['name']));
         return new JsonResponse(['data' => $data]);
     }
 }
