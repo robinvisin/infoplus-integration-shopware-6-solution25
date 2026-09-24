@@ -14,9 +14,9 @@
     ],
     "require": {
         "php": ">=8.2",
-        "shopware/core": "~6.6.0",
-        "shopware/administration": "~6.6.0",
-        "shopware/storefront": "~6.6.0",
+        "shopware/core": "~6.7.0",
+        "shopware/administration": "~6.7.0",
+        "shopware/storefront": "~6.7.0",
         "symfony/messenger": "^7.2",
         "symfony/rate-limiter": "^7.1"
     },
