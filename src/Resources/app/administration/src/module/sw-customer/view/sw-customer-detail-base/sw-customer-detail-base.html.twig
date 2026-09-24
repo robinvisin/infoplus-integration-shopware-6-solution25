@@ -1,17 +1,22 @@
 {% block sw_customer_detail_base_info_holder %}
-    <sw-card :title="$tc('infoplus.common.detailsCardTitle')" position-identifier="infoplus-details">
-        <template>
-            <div>
-                <span class="infoplus_message"> {{ message }}</span>
-                <sw-button
-                        class="infoplus_button"
-                        :disabled="isInProgress"
-                        variant="primary"
-                        @click="syncCustomer">
-                    {{ $tc('infoplus.common.syncWithInfoplus') }}
-                </sw-button>
-            </div>
-        </template>
-    </sw-card>
-    {% parent %}
+<sw-card
+    :title="$tc('infoplus.common.detailsCardTitle')"
+    position-identifier="infoplus-details"
+>
+    <template>
+        <div>
+            <span class="infoplus_message"> {{ message }}</span>
+            <sw-button
+                class="infoplus_button"
+                :disabled="isInProgress"
+                variant="primary"
+                @click="syncCustomer"
+            >
+                {{ $tc('infoplus.common.syncWithInfoplus') }}
+            </sw-button>
+        </div>
+    </template>
+</sw-card>
+
+{% parent() %}
 {% endblock %}

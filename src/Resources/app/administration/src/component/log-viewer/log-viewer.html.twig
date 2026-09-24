@@ -1,5 +1,8 @@
 <template>
-    <sw-card title="InfoPlus Logs" :is-loading="isLoading">
+    <sw-card
+        title="InfoPlus Logs"
+        :is-loading="isLoading"
+    >
         <template v-if="error">
             <sw-alert variant="error">{{ error }}</sw-alert>
         </template>
@@ -31,7 +34,9 @@
                     />
                 </div>
             </div>
-            <p v-else>{{ $tc('infoplus.logs.noLogsAvailable') }}</p>
+            <p v-else>
+                {{ $tc('infoplus.logs.noLogsAvailable') }}
+            </p>
         </template>
     </sw-card>
 </template>

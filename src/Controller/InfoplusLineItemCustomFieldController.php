@@ -45,7 +45,7 @@ class InfoplusLineItemCustomFieldController extends AbstractController
         $li->setPayloadValue('infoplus_alias_ids', $aliases);
     }
 
-    #[Route(path: '/store-api/infoplus/cart/line-item/custom-fields', name: 'store-api.infoplus.cart.line-item.custom-fields', defaults: ['_routeScope' => ['store-api']], methods: ['POST'])]
+    #[\Symfony\Component\Routing\Attribute\Route(path: '/store-api/infoplus/cart/line-item/custom-fields', name: 'store-api.infoplus.cart.line-item.custom-fields', defaults: ['_routeScope' => ['store-api']], methods: ['POST'])]
     public function upsertCustomFields(Request $request, SalesChannelContext $salesChannelContext): JsonResponse
     {
         $data = json_decode($request->getContent(), true) ?: [];
@@ -138,7 +138,7 @@ class InfoplusLineItemCustomFieldController extends AbstractController
         return new JsonResponse(['success' => true, 'updated' => $updated]);
     }
 
-    #[Route(path: '/store-api/infoplus/cart/line-item/add-multiple', name: 'store-api.infoplus.cart.line-item.add-multiple', defaults: ['_routeScope' => ['store-api']], methods: ['POST'])]
+    #[\Symfony\Component\Routing\Attribute\Route(path: '/store-api/infoplus/cart/line-item/add-multiple', name: 'store-api.infoplus.cart.line-item.add-multiple', defaults: ['_routeScope' => ['store-api']], methods: ['POST'])]
     public function addMultipleConfiguredItems(Request $request, SalesChannelContext $salesChannelContext): JsonResponse
     {
         $data = json_decode($request->getContent(), true) ?: [];
@@ -211,7 +211,7 @@ class InfoplusLineItemCustomFieldController extends AbstractController
         return new JsonResponse(['success' => true, 'added' => $added]);
     }
 
-    #[Route(path: '/store-api/infoplus/cart/line-item/add-configured', name: 'store-api.infoplus.cart/line-item/add-configured', defaults: ['_routeScope' => ['store-api']], methods: ['POST'])]
+    #[\Symfony\Component\Routing\Attribute\Route(path: '/store-api/infoplus/cart/line-item/add-configured', name: 'store-api.infoplus.cart/line-item/add-configured', defaults: ['_routeScope' => ['store-api']], methods: ['POST'])]
     public function addConfiguredItem(Request $request, SalesChannelContext $salesChannelContext): JsonResponse
     {
         $data = json_decode($request->getContent(), true) ?: [];

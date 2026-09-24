@@ -1,24 +1,27 @@
 <template>
     <div class="infoplus-customfields">
-        <div class="infoplus-content" style="display: flex; justify-content: flex-end; margin-bottom: 20px;">
+        <div
+            class="infoplus-content"
+            style="display: flex; justify-content: flex-end; margin-bottom: 20px;"
+        >
             <sw-button
-                    variant="primary"
-                    @click="addNewCustomField"
+                variant="primary"
+                @click="addNewCustomField"
             >
                 {{ $tc('infoplus.customfield.createNew') }}
             </sw-button>
         </div>
         <sw-card>
             <sw-data-grid
-                    :dataSource="customFields"
-                    :actions="true"
-                    :columns="[
+                :dataSource="customFields"
+                :actions="true"
+                :columns="[
                     { property: 'technicalName', label: $tc('infoplus.customfield.columns.technicalName') },
                     { property: 'label', label: $tc('infoplus.customfield.columns.label') },
                     { property: 'type', label: $tc('infoplus.customfield.columns.type') },
                     { property: 'active', label: $tc('infoplus.customfield.columns.active') }
                     ]"
-                    :showSelection="false"
+                :showSelection="false"
             >
                 <template #actions="{ item }">
                     <sw-context-menu-item @click="editCustomField(item)">

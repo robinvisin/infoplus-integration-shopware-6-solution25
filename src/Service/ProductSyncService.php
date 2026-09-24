@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace InfoPlusCommerce\Service;
 
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\OrFilter;
 use InfoPlusCommerce\Client\InfoplusApiClient;
 use InfoPlusCommerce\Core\Content\InfoplusCategory\InfoplusCategoryEntity;
 use InfoPlusCommerce\Core\Content\InfoplusCategory\InfoplusCategoryCollection;
@@ -78,7 +79,7 @@ class ProductSyncService
         // Batch fetch categories
         $allGroupIds = array_unique(array_merge($majorGroupIds, $subGroupIds));
         $categoryCriteria = new Criteria();
-        $categoryCriteria->addFilter(new \Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\OrFilter(array_map(fn($id) => new EqualsFilter('internalId', $id), $allGroupIds)));
+        $categoryCriteria->addFilter(new OrFilter(array_map(fn($id) => new EqualsFilter('internalId', $id), $allGroupIds)));
         /** @var InfoplusCategoryCollection|InfoplusCategoryEntity[] $categories */
         $categories = $this->infoplusCategoryRepository->search($categoryCriteria, $context)->getEntities();
         $categoriesByInternalId = [];

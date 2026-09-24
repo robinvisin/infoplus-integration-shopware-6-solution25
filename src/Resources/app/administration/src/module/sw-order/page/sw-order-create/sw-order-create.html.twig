@@ -1,10 +1,11 @@
 {% block sw_order_create_content_tabs_details %}
-    {% parent %}
-    <sw-tabs-item
-        class="sw-order-create__tab-customfields"
-        :route="{ name: 'sw-order-create-customfields' }"
-        :title="$tc('infoplus.customfields')"
-    >
-        Infoplus Custom Fields
-    </sw-tabs-item>
+{% parent() %}
+
+<sw-tabs-item
+    class="sw-order-create__tab-customfields"
+    :route="{ name: 'sw-order-create-customfields' }"
+    :title="$tc('infoplus.customfields')"
+>
+    Infoplus Custom Fields
+</sw-tabs-item>
 {% endblock %}

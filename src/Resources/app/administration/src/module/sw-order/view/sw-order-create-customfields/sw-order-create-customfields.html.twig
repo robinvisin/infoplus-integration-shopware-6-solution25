@@ -1,10 +1,19 @@
 <sw-card title="Infoplus Custom Fields">
     <div v-if="lineItems && lineItems.length">
-        <div v-for="item in lineItems || []" :key="item.id" class="infoplus-lineitem-fields">
+        <div
+            v-for="item in lineItems || []"
+            :key="item.id"
+            class="infoplus-lineitem-fields"
+        >
             <h4>{{ item.label || item.name }}</h4>
-            <div v-if="assignableFieldsByLineItem[item.id] && assignableFieldsByLineItem[item.id].length">
-                <div v-for="field in assignableFieldsByLineItem[item.id]" :key="field.technicalName" class="infoplus-customfield">
-
+            <div
+                v-if="assignableFieldsByLineItem[item.id] && assignableFieldsByLineItem[item.id].length"
+            >
+                <div
+                    v-for="field in assignableFieldsByLineItem[item.id]"
+                    :key="field.technicalName"
+                    class="infoplus-customfield"
+                >
                     <template v-if="field.type === 'text'">
                         <sw-text-field
                             :label="field.label"
@@ -24,7 +33,9 @@
                         />
                     </template>
 
-                    <template v-else-if="field.type === 'number' || field.type === 'money'">
+                    <template
+                        v-else-if="field.type === 'number' || field.type === 'money'"
+                    >
                         <sw-number-field
                             :label="field.label"
                             :required="field.isRequired"
@@ -63,10 +74,18 @@
                     </template>
                 </div>
             </div>
-            <em v-else class="infoplus-customfields-empty">No assignable custom fields for this product</em>
+            <em
+                v-else
+                class="infoplus-customfields-empty"
+            >No assignable custom fields for this product</em>
         </div>
         <div style="margin-top: 2rem; text-align: right;">
-            <sw-button variant="primary" @click="saveCustomFields">{{ $tc('global.default.save') }}</sw-button>
+            <sw-button
+                variant="primary"
+                @click="saveCustomFields"
+            >
+                {{ $tc('global.default.save') }}
+            </sw-button>
         </div>
     </div>
     <em v-else>No line items found</em>

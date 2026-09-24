@@ -1,22 +1,24 @@
 {% block sw_settings_shipping_detail_base %}
-    <sw-card
-        position-identifier="infoplus-shipping-method"
-        :is-loading="isLoading || carriersLoading"
-        :title="$tc('infoplus.shipping.cardTitle')"
+<sw-card
+    position-identifier="infoplus-shipping-method"
+    :is-loading="isLoading || carriersLoading"
+    :title="$tc('infoplus.shipping.cardTitle')"
+>
+    <sw-single-select
+        v-model:value="selectedInfoplusCarrierId"
+        :disabled="!acl.can('shipping.editor') || carriersLoading || undefined"
+        :options="carrierOptions"
+        :label="$tc('infoplus.shipping.carrierSelectLabel')"
+        :placeholder="$tc('infoplus.shipping.carrierSelectPlaceholder')"
+        show-clearable-button
     >
-        <sw-single-select
-            v-model:value="selectedInfoplusCarrierId"
-            :disabled="!acl.can('shipping.editor') || carriersLoading || undefined"
-            :options="carrierOptions"
-            :label="$tc('infoplus.shipping.carrierSelectLabel')"
-            :placeholder="$tc('infoplus.shipping.carrierSelectPlaceholder')"
-            show-clearable-button
-        >
-            <template #hint>
-                <span>{{ $tc('infoplus.shipping.helpDefaultCarrier') }}</span>
-            </template>
-        </sw-single-select>
-    </sw-card>
+        <template #hint>
+            <span>
+                {{ $tc('infoplus.shipping.helpDefaultCarrier') }}
+            </span>
+        </template>
+    </sw-single-select>
+</sw-card>
 
-    {% parent %}
+{% parent() %}
 {% endblock %}

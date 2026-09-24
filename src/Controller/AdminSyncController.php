@@ -19,7 +19,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\System\StateMachine\Aggregation\StateMachineState\StateMachineStateEntity;
 use Shopware\Core\System\StateMachine\StateMachineEntity;
 
-#[Route(defaults: ['_routeScope' => ['api']])]
+#[\Symfony\Component\Routing\Attribute\Route(defaults: ['_routeScope' => ['api']])]
 class AdminSyncController extends AbstractController
 {
     /**
@@ -33,7 +33,7 @@ class AdminSyncController extends AbstractController
     ) {
     }
 
-    #[Route(path: '/api/_action/infoplus/sync/products', name: 'api.infoplus.sync.products', methods: ['POST'])]
+    #[\Symfony\Component\Routing\Attribute\Route(path: '/api/_action/infoplus/sync/products', name: 'api.infoplus.sync.products', methods: ['POST'])]
     public function syncProducts(Context $context): JsonResponse
     {
         try {
@@ -45,7 +45,7 @@ class AdminSyncController extends AbstractController
         }
     }
 
-    #[Route(path: '/api/_action/infoplus/sync/categories', name: 'api.infoplus.sync.categories', methods: ['POST'])]
+    #[\Symfony\Component\Routing\Attribute\Route(path: '/api/_action/infoplus/sync/categories', name: 'api.infoplus.sync.categories', methods: ['POST'])]
     public function syncCategories(Context $context): JsonResponse
     {
         try {
@@ -57,7 +57,7 @@ class AdminSyncController extends AbstractController
         }
     }
 
-    #[Route(path: '/api/_action/infoplus/sync/customers', name: 'api.infoplus.sync.customers', methods: ['POST'])]
+    #[\Symfony\Component\Routing\Attribute\Route(path: '/api/_action/infoplus/sync/customers', name: 'api.infoplus.sync.customers', methods: ['POST'])]
     public function syncCustomers(Context $context): JsonResponse
     {
         try {
@@ -68,7 +68,7 @@ class AdminSyncController extends AbstractController
         }
     }
 
-    #[Route(path: '/api/_action/infoplus/sync/inventory', name: 'api.infoplus.sync.inventory', methods: ['POST'])]
+    #[\Symfony\Component\Routing\Attribute\Route(path: '/api/_action/infoplus/sync/inventory', name: 'api.infoplus.sync.inventory', methods: ['POST'])]
     public function syncInventory(Context $context): JsonResponse
     {
         try {
@@ -79,7 +79,7 @@ class AdminSyncController extends AbstractController
         }
     }
 
-    #[Route(path: '/api/_action/infoplus/sync/paidOrders', name: 'api.infoplus.sync.paidOrders', methods: ['POST'])]
+    #[\Symfony\Component\Routing\Attribute\Route(path: '/api/_action/infoplus/sync/paidOrders', name: 'api.infoplus.sync.paidOrders', methods: ['POST'])]
     public function syncPaidOrders(Context $context): JsonResponse
     {
         try {
@@ -90,7 +90,7 @@ class AdminSyncController extends AbstractController
         }
     }
 
-    #[Route(path: '/api/_action/infoplus/sync/all', name: 'api.infoplus.sync.all', methods: ['POST'])]
+    #[\Symfony\Component\Routing\Attribute\Route(path: '/api/_action/infoplus/sync/all', name: 'api.infoplus.sync.all', methods: ['POST'])]
     public function syncAll(): JsonResponse
     {
         try {
@@ -102,7 +102,7 @@ class AdminSyncController extends AbstractController
         }
     }
 
-    #[Route(path: '/api/_action/infoplus/sync/orders', name: 'api.infoplus.sync.orders', methods: ['POST'])]
+    #[\Symfony\Component\Routing\Attribute\Route(path: '/api/_action/infoplus/sync/orders', name: 'api.infoplus.sync.orders', methods: ['POST'])]
     public function syncOrders(Context $context): JsonResponse
     {
         try {
@@ -114,7 +114,7 @@ class AdminSyncController extends AbstractController
         }
     }
 
-    #[Route(path: '/api/_action/infoplus/delete/item/{id}', name: 'api.infoplus.delete.item', methods: ['DELETE'])]
+    #[\Symfony\Component\Routing\Attribute\Route(path: '/api/_action/infoplus/delete/item/{id}', name: 'api.infoplus.delete.item', methods: ['DELETE'])]
     public function deleteItem(int $id): JsonResponse
     {
         try {
@@ -125,7 +125,7 @@ class AdminSyncController extends AbstractController
         }
     }
 
-    #[Route(path: '/api/_action/infoplus/delete/category/{id}', name: 'api.infoplus.delete.category', methods: ['DELETE'])]
+    #[\Symfony\Component\Routing\Attribute\Route(path: '/api/_action/infoplus/delete/category/{id}', name: 'api.infoplus.delete.category', methods: ['DELETE'])]
     public function deleteCategory(string $id, Context $context): JsonResponse
     {
         try {
@@ -136,7 +136,7 @@ class AdminSyncController extends AbstractController
         }
     }
 
-    #[Route(path: '/api/_action/infoplus/delete/customer/{id}', name: 'api.infoplus.delete.customer', methods: ['DELETE'])]
+    #[\Symfony\Component\Routing\Attribute\Route(path: '/api/_action/infoplus/delete/customer/{id}', name: 'api.infoplus.delete.customer', methods: ['DELETE'])]
     public function deleteCustomer(int $id): JsonResponse
     {
         try {
@@ -147,7 +147,7 @@ class AdminSyncController extends AbstractController
         }
     }
 
-    #[Route(path: '/api/_action/infoplus/delete/order/{id}', name: 'api.infoplus.delete.order', methods: ['DELETE'])]
+    #[\Symfony\Component\Routing\Attribute\Route(path: '/api/_action/infoplus/delete/order/{id}', name: 'api.infoplus.delete.order', methods: ['DELETE'])]
     public function deleteOrder(int $id): JsonResponse
     {
         try {
@@ -158,7 +158,7 @@ class AdminSyncController extends AbstractController
         }
     }
 
-    #[Route(path: '/api/_action/infoplus/getLobs', name: 'api.infoplus.get.lobs', methods: ['GET'])]
+    #[\Symfony\Component\Routing\Attribute\Route(path: '/api/_action/infoplus/getLobs', name: 'api.infoplus.get.lobs', methods: ['GET'])]
     public function lobTest(): JsonResponse
     {
         try {
@@ -168,7 +168,7 @@ class AdminSyncController extends AbstractController
         }
     }
 
-    #[Route(path: '/api/_action/infoplus/warehouses', name: 'api.infoplus.warehouses', methods: ['GET'])]
+    #[\Symfony\Component\Routing\Attribute\Route(path: '/api/_action/infoplus/warehouses', name: 'api.infoplus.warehouses', methods: ['GET'])]
     public function syncWarehouses(): JsonResponse
     {
         try {
@@ -178,7 +178,7 @@ class AdminSyncController extends AbstractController
         }
     }
 
-    #[Route(path: '/api/_action/infoplus/carriers', name: 'api.infoplus.carriers', methods: ['GET'])]
+    #[\Symfony\Component\Routing\Attribute\Route(path: '/api/_action/infoplus/carriers', name: 'api.infoplus.carriers', methods: ['GET'])]
     public function syncCarriers(): JsonResponse
     {
         try {
@@ -188,7 +188,7 @@ class AdminSyncController extends AbstractController
         }
     }
 
-    #[Route(path: '/api/_action/infoplus/getItemCategories', name: 'api.infoplus.getItemCategories', methods: ['GET'])]
+    #[\Symfony\Component\Routing\Attribute\Route(path: '/api/_action/infoplus/getItemCategories', name: 'api.infoplus.getItemCategories', methods: ['GET'])]
     public function getItemCategories(): JsonResponse
     {
         try {
@@ -198,7 +198,7 @@ class AdminSyncController extends AbstractController
         }
     }
 
-    #[Route(path: '/api/_action/infoplus/getItemSubCategories', name: 'api.infoplus.getItemSubCategories', methods: ['GET'])]
+    #[\Symfony\Component\Routing\Attribute\Route(path: '/api/_action/infoplus/getItemSubCategories', name: 'api.infoplus.getItemSubCategories', methods: ['GET'])]
     public function getItemSubCategories(): JsonResponse
     {
         try {
@@ -208,7 +208,7 @@ class AdminSyncController extends AbstractController
         }
     }
 
-    #[Route(path: '/api/_action/infoplus/getItems', name: 'api.infoplus.getItems', methods: ['GET'])]
+    #[\Symfony\Component\Routing\Attribute\Route(path: '/api/_action/infoplus/getItems', name: 'api.infoplus.getItems', methods: ['GET'])]
     public function getItems(): JsonResponse
     {
         try {
@@ -218,7 +218,7 @@ class AdminSyncController extends AbstractController
         }
     }
 
-    #[Route(path: '/api/_action/infoplus/getOrders', name: 'api.infoplus.getOrders', methods: ['GET'])]
+    #[\Symfony\Component\Routing\Attribute\Route(path: '/api/_action/infoplus/getOrders', name: 'api.infoplus.getOrders', methods: ['GET'])]
     public function getOrders(): JsonResponse
     {
         try {
@@ -228,7 +228,7 @@ class AdminSyncController extends AbstractController
         }
     }
 
-    #[Route(path: '/api/_action/infoplus/getCustomers', name: 'api.infoplus.getCustomers', methods: ['GET'])]
+    #[\Symfony\Component\Routing\Attribute\Route(path: '/api/_action/infoplus/getCustomers', name: 'api.infoplus.getCustomers', methods: ['GET'])]
     public function getCustomers(): JsonResponse
     {
         try {
@@ -238,7 +238,7 @@ class AdminSyncController extends AbstractController
         }
     }
 
-    #[Route(path: '/api/_action/infoplus/getInventories', name: 'api.infoplus.getInventories', methods: ['GET'])]
+    #[\Symfony\Component\Routing\Attribute\Route(path: '/api/_action/infoplus/getInventories', name: 'api.infoplus.getInventories', methods: ['GET'])]
     public function getInventories(): JsonResponse
     {
         try {
@@ -248,7 +248,7 @@ class AdminSyncController extends AbstractController
         }
     }
 
-    #[Route(path: '/api/_action/infoplus/sync/order/{id}', name: 'api.infoplus.sync.order', methods: ['POST'])]
+    #[\Symfony\Component\Routing\Attribute\Route(path: '/api/_action/infoplus/sync/order/{id}', name: 'api.infoplus.sync.order', methods: ['POST'])]
     public function syncOrder(string $id, Context $context): JsonResponse
     {
         try {
@@ -266,7 +266,7 @@ class AdminSyncController extends AbstractController
         }
     }
 
-    #[Route(path: '/api/_action/infoplus/sync/product/{id}', name: 'api.infoplus.sync.product', methods: ['POST'])]
+    #[\Symfony\Component\Routing\Attribute\Route(path: '/api/_action/infoplus/sync/product/{id}', name: 'api.infoplus.sync.product', methods: ['POST'])]
     public function syncProduct(string $id, Context $context): JsonResponse
     {
         try {
@@ -284,7 +284,7 @@ class AdminSyncController extends AbstractController
         }
     }
 
-    #[Route(path: '/api/_action/infoplus/sync/customer/{id}', name: 'api.infoplus.sync.customer', methods: ['POST'])]
+    #[\Symfony\Component\Routing\Attribute\Route(path: '/api/_action/infoplus/sync/customer/{id}', name: 'api.infoplus.sync.customer', methods: ['POST'])]
     public function syncCustomer(string $id, Context $context): JsonResponse
     {
         try {
@@ -302,7 +302,7 @@ class AdminSyncController extends AbstractController
         }
     }
 
-    #[Route(path: '/api/_action/infoplus/sync/category/{id}', name: 'api.infoplus.sync.category', methods: ['POST'])]
+    #[\Symfony\Component\Routing\Attribute\Route(path: '/api/_action/infoplus/sync/category/{id}', name: 'api.infoplus.sync.category', methods: ['POST'])]
     public function syncCategory(string $id, Context $context): JsonResponse
     {
         try {
@@ -320,7 +320,7 @@ class AdminSyncController extends AbstractController
         }
     }
 
-    #[Route(path: '/api/_action/infoplus/getAllCategories/{isSubCategory}', name: 'api.infoplus.getAllCategories', methods: ['GET'])]
+    #[\Symfony\Component\Routing\Attribute\Route(path: '/api/_action/infoplus/getAllCategories/{isSubCategory}', name: 'api.infoplus.getAllCategories', methods: ['GET'])]
     public function getAllCategories(int $isSubCategory, Context $context): JsonResponse
     {
         try {
@@ -330,7 +330,7 @@ class AdminSyncController extends AbstractController
         }
     }
 
-    #[Route(path: '/api/_action/infoplus/createCategory', name: 'api.infoplus.createCategory', methods: ['POST'])]
+    #[\Symfony\Component\Routing\Attribute\Route(path: '/api/_action/infoplus/createCategory', name: 'api.infoplus.createCategory', methods: ['POST'])]
     public function createCategory(Request $request, Context $context): JsonResponse
     {
         try {
@@ -348,7 +348,7 @@ class AdminSyncController extends AbstractController
         }
     }
 
-    #[Route(path: '/api/_action/infoplus/getCategory/{id}', name: 'api.infoplus.getCategory', methods: ['GET'])]
+    #[\Symfony\Component\Routing\Attribute\Route(path: '/api/_action/infoplus/getCategory/{id}', name: 'api.infoplus.getCategory', methods: ['GET'])]
     public function getCategory(string $id, Context $context): JsonResponse
     {
         try {
@@ -362,7 +362,7 @@ class AdminSyncController extends AbstractController
         }
     }
 
-    #[Route(path: '/api/_action/infoplus/updateCategory/{id}', name: 'api.infoplus.updateCategory', methods: ['POST'])]
+    #[\Symfony\Component\Routing\Attribute\Route(path: '/api/_action/infoplus/updateCategory/{id}', name: 'api.infoplus.updateCategory', methods: ['POST'])]
     public function updateCategory(string $id, Request $request, Context $context): JsonResponse
     {
         try {
@@ -379,13 +379,13 @@ class AdminSyncController extends AbstractController
             throw new HttpException(500, $this->translator->trans('infoplus.api.errors.categoryUpdateFailed') . ' ' . $e->getMessage());
         }
     }
-    #[Route(path: '/api/_action/infoplus/config', name: 'api.action.infoplus.config', methods: ['GET'])]
+    #[\Symfony\Component\Routing\Attribute\Route(path: '/api/_action/infoplus/config', name: 'api.action.infoplus.config', methods: ['GET'])]
     public function config(ConfigService $configService): JsonResponse
     {
         return new JsonResponse($configService->getAll());
     }
 
-    #[Route(path: '/api/_action/infoplus/payment-states', name: 'api.infoplus.paymentStates', methods: ['GET'])]
+    #[\Symfony\Component\Routing\Attribute\Route(path: '/api/_action/infoplus/payment-states', name: 'api.infoplus.paymentStates', methods: ['GET'])]
     public function getPaymentStates(Context $context): JsonResponse
     {
         $machineCriteria = new Criteria();
@@ -421,7 +421,7 @@ class AdminSyncController extends AbstractController
         return new JsonResponse(['data' => $data]);
     }
 
-    #[Route(path: '/api/_action/infoplus/order-states', name: 'api.infoplus.orderStates', methods: ['GET'])]
+    #[\Symfony\Component\Routing\Attribute\Route(path: '/api/_action/infoplus/order-states', name: 'api.infoplus.orderStates', methods: ['GET'])]
     public function getOrderStates(Context $context): JsonResponse
     {
         $machineCriteria = new Criteria();

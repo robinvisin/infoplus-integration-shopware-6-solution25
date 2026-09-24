@@ -1,0 +1,219 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/symfony/dependency-injection/7.4/Loader/schema/services.schema.json
+services:
+    InfoPlusCommerce\Controller\LogFileController:
+        public: true
+        autowire: true
+        autoconfigure: true
+
+    InfoPlusCommerce\Service\ConfigService:
+        arguments:
+            - '@Shopware\Core\System\SystemConfig\SystemConfigService'
+
+    InfoPlusCommerce\Client\InfoplusApiClient:
+        arguments:
+            - '@InfoPlusCommerce\Service\ConfigService'
+            - '@InfoPlus.logger'
+            - '@limiter.infoplus_user_limiter'
+            - '@limiter.infoplus_domain_limiter'
+
+    InfoPlusCommerce\Service\CategorySyncService:
+        autowire: true
+        autoconfigure: true
+
+    InfoPlusCommerce\Service\ProductSyncService:
+        autowire: true
+        autoconfigure: true
+
+    InfoPlusCommerce\Service\CustomerSyncService:
+        autowire: true
+        autoconfigure: true
+
+    InfoPlusCommerce\Service\OrderSyncService:
+        autowire: true
+        autoconfigure: true
+
+    InfoPlusCommerce\Service\InventorySyncService:
+        autowire: true
+        autoconfigure: true
+
+    InfoPlusCommerce\Service\SyncService:
+        autowire: true
+        autoconfigure: true
+
+    InfoPlusCommerce\MessageHandler\SyncOrdersHandler:
+        arguments:
+            - '@InfoPlusCommerce\Service\SyncService'
+            - '@InfoPlus.logger'
+        tags:
+            - messenger.message_handler
+
+    InfoPlusCommerce\Controller\AdminSyncController:
+        public: true
+        arguments:
+            - '@InfoPlusCommerce\Service\SyncService'
+            - '@translator'
+            - '@state_machine.repository'
+            - '@state_machine_state.repository'
+        calls:
+            - [setContainer, ['@service_container']]
+        tags:
+            - controller.service_arguments
+
+    InfoPlusCommerce\Service\AdminCustomFieldService:
+        arguments:
+            - '@infoplus_field_definition.repository'
+
+    InfoPlusCommerce\Controller\AdminCustomFieldController:
+        public: true
+        arguments:
+            - '@InfoPlusCommerce\Service\AdminCustomFieldService'
+        calls:
+            - [setContainer, ['@service_container']]
+        tags:
+            - controller.service_arguments
+
+    InfoPlusCommerce\Subscriber\EventSubscriber:
+        arguments:
+            - '@InfoPlusCommerce\Service\SyncService'
+            - '@InfoPlus.logger'
+        tags:
+            - kernel.event_subscriber
+
+    InfoPlusCommerce\Service\IdMappingService:
+        arguments:
+            - '@infoplus_id_mapping.repository'
+            - '@infoplus_order_sync.repository'
+            - '@InfoPlusCommerce\Service\ConfigService'
+
+    infoplus.rate_limiter.storage:
+        class: Symfony\Component\RateLimiter\Storage\CacheStorage
+        arguments:
+            - '@cache.app'
+
+    limiter.infoplus_user_limiter:
+        class: Symfony\Component\RateLimiter\RateLimiterFactory
+        arguments:
+            - id: infoplus_user_limiter
+              policy: fixed_window
+              limit: 3
+              interval: 1 second
+            - '@infoplus.rate_limiter.storage'
+
+    limiter.infoplus_domain_limiter:
+        class: Symfony\Component\RateLimiter\RateLimiterFactory
+        arguments:
+            - id: infoplus_domain_limiter
+              policy: fixed_window
+              limit: 10
+              interval: 1 second
+            - '@infoplus.rate_limiter.storage'
+
+    InfoPlusCommerce\Command\SyncCommand:
+        arguments:
+            - '@InfoPlusCommerce\Service\SyncService'
+            - '@InfoPlus.logger'
+            - '@order.repository'
+        tags:
+            - console.command
+
+    InfoPlusCommerce\Core\Content\IdMapping\IdMappingDefinition:
+        tags:
+            - {name: shopware.entity.definition, entity: infoplus_id_mapping}
+
+    InfoPlusCommerce\Core\Content\OrderSync\OrderSyncDefinition:
+        tags:
+            - {name: shopware.entity.definition, entity: infoplus_order_sync}
+
+    InfoPlusCommerce\Core\Content\InfoplusCategory\InfoplusCategoryDefinition:
+        tags:
+            - {name: shopware.entity.definition, entity: infoplus_category}
+
+    InfoPlusCommerce\ScheduledTask\SyncPaidOrdersTask:
+        tags:
+            - shopware.scheduled.task
+
+    InfoPlusCommerce\ScheduledTask\SyncPaidOrdersTaskHandler:
+        arguments:
+            - '@InfoPlusCommerce\Service\SyncService'
+        tags:
+            - messenger.message_handler
+
+    InfoPlusCommerce\ScheduledTask\SyncProductInventoryTask:
+        tags:
+            - shopware.scheduled.task
+
+    InfoPlusCommerce\ScheduledTask\SyncProductInventoryTaskHandler:
+        arguments:
+            - '@InfoPlusCommerce\Service\SyncService'
+        tags:
+            - messenger.message_handler
+
+    InfoPlus.logger:
+        class: Monolog\Logger
+        arguments:
+            - InfoPlus
+            - - '@InfoPlus.rotatingHandler'
+
+    InfoPlus.rotatingHandler:
+        class: Monolog\Handler\RotatingFileHandler
+        arguments:
+            - '%kernel.logs_dir%/InfoPlus-log-%kernel.environment%.log'
+
+    InfoPlusCommerce\Core\Content\InfoplusFieldDefinition\InfoplusFieldDefinitionEntity:
+        autowire: true
+        autoconfigure: true
+
+    InfoPlusCommerce\Core\Content\InfoplusFieldDefinition\InfoplusFieldDefinitionCollection:
+        autowire: true
+        autoconfigure: true
+
+    InfoPlusCommerce\Core\Content\InfoplusFieldDefinition\InfoplusFieldDefinitionDefinition:
+        autowire: true
+        autoconfigure: true
+        tags:
+            - {name: shopware.entity.definition, entity: infoplus_field_definition}
+
+    InfoPlusCommerce\Storefront\Subscriber\InfoplusProductPageSubscriber:
+        arguments:
+            - '@infoplus_field_definition.repository'
+        tags:
+            - kernel.event_subscriber
+
+    InfoPlusCommerce\Subscriber\InfoplusOrderPlacedSubscriber:
+        arguments:
+            - '@order_line_item.repository'
+        tags:
+            - kernel.event_subscriber
+
+    InfoPlusCommerce\Controller\InfoplusLineItemCustomFieldController:
+        public: true
+        autowire: true
+        autoconfigure: true
+
+    InfoPlusCommerce\Storefront\Subscriber\InfoplusOrderDetailSubscriber:
+        arguments:
+            - '@infoplus_field_definition.repository'
+        tags:
+            - kernel.event_subscriber
+
+    InfoPlusCommerce\Cart\Processor\InfoplusCustomFieldPriceProcessor:
+        autowire: true
+        autoconfigure: true
+        tags:
+            - {name: shopware.cart.processor, priority: 4901}
+
+    InfoPlusCommerce\Storefront\Route\InfoplusCartItemAddRoute:
+        public: true
+        decorates: Shopware\Core\Checkout\Cart\SalesChannel\CartItemAddRoute
+        arguments:
+            - '@InfoPlusCommerce\Storefront\Route\InfoplusCartItemAddRoute.inner'
+        tags:
+            - controller.service_arguments
+
+    InfoPlusCommerce\Storefront\Route\InfoplusCartItemUpdateRoute:
+        public: true
+        decorates: Shopware\Core\Checkout\Cart\SalesChannel\CartItemUpdateRoute
+        arguments:
+            - '@InfoPlusCommerce\Storefront\Route\InfoplusCartItemUpdateRoute.inner'
+        tags:
+            - controller.service_arguments

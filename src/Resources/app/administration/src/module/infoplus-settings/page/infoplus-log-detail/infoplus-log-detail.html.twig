@@ -1,26 +1,47 @@
 <sw-page>
     <template #content>
         <sw-card-view>
-            <div class="infoplus-content" style="display: flex; justify-content: flex-end; margin-bottom: 20px;">
-                <sw-button variant="secondary" @click="$router.back()">{{ $tc('infoplus.logs.back') }}</sw-button>
+            <div
+                class="infoplus-content"
+                style="display: flex; justify-content: flex-end; margin-bottom: 20px;"
+            >
+                <sw-button
+                    variant="secondary"
+                    @click="$router.back()"
+                >
+                    {{ $tc('infoplus.logs.back') }}
+                </sw-button>
             </div>
-            <sw-card :title="$tc('infoplus.logs.title', 0, { file: file })" :is-loading="isLoading">
+            <sw-card
+                :title="$tc('infoplus.logs.title', 0, { file: file })"
+                :is-loading="isLoading"
+            >
                 <template v-if="error">
                     <sw-alert variant="error">{{ error }}</sw-alert>
                 </template>
+
                 <template v-else>
-                    <div class="log-content" style="overflow-x: scroll">
-                        <div v-for="line in lines" :key="lineIndex(line)" style="margin: 5px 0;">
+                    <div
+                        class="log-content"
+                        style="overflow-x: scroll"
+                    >
+                        <div
+                            v-for="line in lines"
+                            :key="lineIndex(line)"
+                            style="margin: 5px 0;"
+                        >
                             <pre>{{ line }}</pre>
                         </div>
                     </div>
                     <sw-pagination
-                            :total="totalLines"
-                            :limit="pagination.limit"
-                            :page="pagination.page"
-                            @page-change="onPageChange"
+                        :total="totalLines"
+                        :limit="pagination.limit"
+                        :page="pagination.page"
+                        @page-change="onPageChange"
                     />
-                    <sw-button @click="downloadLog">{{ $tc('infoplus.logs.download') }}</sw-button>
+                    <sw-button @click="downloadLog">
+                        {{ $tc('infoplus.logs.download') }}
+                    </sw-button>
                 </template>
             </sw-card>
         </sw-card-view>

@@ -1,11 +1,11 @@
 {% block sw_order_detail_content_tabs_extension %}
-    {% parent %}
-    <sw-tabs-item
+{% parent() %}
 
-            class="sw-order-detail__tabs-tab-returns"
-            :route="{ name: 'sw-order-detail-customfields', params: { id: $route.params.id } }"
-            :title="$tc('infoplus.customfields')"
-    >
-        Infoplus Custom Fields
-    </sw-tabs-item>
+<sw-tabs-item
+    class="sw-order-detail__tabs-tab-returns"
+    :route="{ name: 'sw-order-detail-customfields', params: { id: $route.params.id } }"
+    :title="$tc('infoplus.customfields')"
+>
+    Infoplus Custom Fields
+</sw-tabs-item>
 {% endblock %}

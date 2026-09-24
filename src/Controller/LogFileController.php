@@ -12,7 +12,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 
-#[Route(defaults: ['_routeScope' => ['api']])]
+#[\Symfony\Component\Routing\Attribute\Route(defaults: ['_routeScope' => ['api']])]
 class LogFileController extends AbstractController
 {
     private string $logsDir;
@@ -31,7 +31,7 @@ class LogFileController extends AbstractController
         $this->requestStack = $requestStack;
     }
 
-    #[Route(path: '/api/_action/infoplus/logs', name: 'api.infoPlus.logs', methods: ['GET'])]
+    #[\Symfony\Component\Routing\Attribute\Route(path: '/api/_action/infoplus/logs', name: 'api.infoPlus.logs', methods: ['GET'])]
     public function logs(): JsonResponse
     {
         $logs = [];
@@ -86,7 +86,7 @@ class LogFileController extends AbstractController
         return $response;
     }
 
-    #[Route(
+    #[\Symfony\Component\Routing\Attribute\Route(
         path: '/api/_action/infoplus/logs/{file}/content',
         name: 'api.infoplus.logs.file',
         methods: ['GET'],
@@ -140,7 +140,7 @@ class LogFileController extends AbstractController
         }
     }
 
-    #[Route(
+    #[\Symfony\Component\Routing\Attribute\Route(
         path: '/api/_action/infoplus/logs/{file}/download',
         name: 'api.infoplus.logs.file.download',
         methods: ['GET'],

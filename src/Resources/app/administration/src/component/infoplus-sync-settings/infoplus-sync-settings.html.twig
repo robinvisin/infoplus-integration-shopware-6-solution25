@@ -1,37 +1,57 @@
 <template>
     <sw-container>
-        <sw-card :title="$tc('infoplus.settings.syncSettings')" :isLoading="isLoading"
-                 style="margin-top:20px;">
-            <infoplus-switch :label="$tc('infoplus.syncCategories')"
-                             name="InfoPlusCommerce.config.syncCategories" style="margin-top:-10px;"/>
-            <infoplus-switch :label="$tc('infoplus.syncProducts')"
-                             name="InfoPlusCommerce.config.syncProducts"/>
-            <infoplus-switch :label="$tc('infoplus.syncCustomers')"
-                             name="InfoPlusCommerce.config.syncCustomers"/>
-            <infoplus-switch :label="$tc('infoplus.syncInventory')"
-                             name="InfoPlusCommerce.config.syncInventory"/>
-            <infoplus-switch :label="$tc('infoplus.syncOrders')" name="InfoPlusCommerce.config.syncOrders"/>
-
-
-            <hr style="margin: 24px 0; border: 0; border-top: 1px solid #d1d9e0;" />
+        <sw-card
+            :title="$tc('infoplus.settings.syncSettings')"
+            :isLoading="isLoading"
+            style="margin-top:20px;"
+        >
+            <infoplus-switch
+                :label="$tc('infoplus.syncCategories')"
+                name="InfoPlusCommerce.config.syncCategories"
+                style="margin-top:-10px;"
+            />
+            <infoplus-switch
+                :label="$tc('infoplus.syncProducts')"
+                name="InfoPlusCommerce.config.syncProducts"
+            />
+            <infoplus-switch
+                :label="$tc('infoplus.syncCustomers')"
+                name="InfoPlusCommerce.config.syncCustomers"
+            />
+            <infoplus-switch
+                :label="$tc('infoplus.syncInventory')"
+                name="InfoPlusCommerce.config.syncInventory"
+            />
+            <infoplus-switch
+                :label="$tc('infoplus.syncOrders')"
+                name="InfoPlusCommerce.config.syncOrders"
+            />
+            <hr
+                style="margin: 24px 0; border: 0; border-top: 1px solid #d1d9e0;"
+            />
             <div>
                 <sw-multi-select
-                        v-model:value="syncablePaymentStates"
-                        :label="$tc('infoplus.settings.syncablePaymentStatesLabel')"
-                        :help-text="$tc('infoplus.settings.syncablePaymentStatesHelp')"
-                        :options="paymentStateOptions"
+                    v-model:value="syncablePaymentStates"
+                    :label="$tc('infoplus.settings.syncablePaymentStatesLabel')"
+                    :help-text="$tc('infoplus.settings.syncablePaymentStatesHelp')"
+                    :options="paymentStateOptions"
                 />
                 <sw-multi-select
-                        v-model:value="syncableOrderStates"
-                        :label="$tc('infoplus.settings.syncableOrderStatesLabel')"
-                        :help-text="$tc('infoplus.settings.syncableOrderStatesHelp')"
-                        :options="orderStateOptions"
+                    v-model:value="syncableOrderStates"
+                    :label="$tc('infoplus.settings.syncableOrderStatesLabel')"
+                    :help-text="$tc('infoplus.settings.syncableOrderStatesHelp')"
+                    :options="orderStateOptions"
                 />
-                <sw-button variant="primary" @click="saveConfig" >
+                <sw-button
+                    variant="primary"
+                    @click="saveConfig"
+                >
                     {{ $tc('infoplus.settings.save') }}
                 </sw-button>
             </div>
-            <hr style="margin: 24px 0; border: 0; border-top: 1px solid #d1d9e0;" />
+            <hr
+                style="margin: 24px 0; border: 0; border-top: 1px solid #d1d9e0;"
+            />
             <sync-button/>
         </sw-card>
     </sw-container>

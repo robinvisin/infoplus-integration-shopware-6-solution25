@@ -2,34 +2,43 @@
     <template #content>
         <sw-card-view>
             <sw-tabs
-                    :active-item="activeTab"
-                    class="infoplus-content"
-                    position-identifier="infoplus-settings"
-                    :small="false">
-
-                <sw-tabs-item name="sync-settings"
-                              @click.native="activeTab = 'sync-settings'"
-                              :is-active="activeTab === 'sync-settings'"
-                              :route="{ name: 'infoplus.settings.index.sync' }">
+                :active-item="activeTab"
+                class="infoplus-content"
+                position-identifier="infoplus-settings"
+                :small="false"
+            >
+                <sw-tabs-item
+                    name="sync-settings"
+                    @click.native="activeTab = 'sync-settings'"
+                    :is-active="activeTab === 'sync-settings'"
+                    :route="{ name: 'infoplus.settings.index.sync' }"
+                >
                     {{ $tc('infoplus.settings.syncSettings') }}
                 </sw-tabs-item>
-                <sw-tabs-item name="category-settings"
-                              :route="{ name: 'infoplus.settings.index.categories', params: { isSubCategory: false } }">
+                <sw-tabs-item
+                    name="category-settings"
+                    :route="{ name: 'infoplus.settings.index.categories', params: { isSubCategory: false } }"
+                >
                     {{ $tc('infoplus.settings.categorySettings') }}
                 </sw-tabs-item>
-                <sw-tabs-item name="sub-category-settings"
-                              :route="{ name: 'infoplus.settings.index.subCategories', params: { isSubCategory: true } }">
+                <sw-tabs-item
+                    name="sub-category-settings"
+                    :route="{ name: 'infoplus.settings.index.subCategories', params: { isSubCategory: true } }"
+                >
                     {{ $tc('infoplus.settings.subCategorySettings') }}
                 </sw-tabs-item>
-                <sw-tabs-item name="customfield-settings"
-                              :route="{ name: 'infoplus.settings.index.customfields' }">
+                <sw-tabs-item
+                    name="customfield-settings"
+                    :route="{ name: 'infoplus.settings.index.customfields' }"
+                >
                     {{ $tc('infoplus.settings.customFieldSettings') }}
                 </sw-tabs-item>
-                <sw-tabs-item name="error-log-settings"
-                              :route="{ name: 'infoplus.settings.index.logs' }">
+                <sw-tabs-item
+                    name="error-log-settings"
+                    :route="{ name: 'infoplus.settings.index.logs' }"
+                >
                     {{ $tc('infoplus.settings.logInfo') }}
                 </sw-tabs-item>
-
             </sw-tabs>
             <router-view></router-view>
         </sw-card-view>

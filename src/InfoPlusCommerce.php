@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace InfoPlusCommerce;
 
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\OrFilter;
 use Shopware\Core\Framework\Plugin;
 use Shopware\Core\Framework\Plugin\Context\InstallContext;
@@ -57,7 +58,7 @@ class InfoPlusCommerce extends Plugin
         if ($this->container === null) {
             throw new \RuntimeException('Container not available');
         }
-        /** @var \Symfony\Component\DependencyInjection\ContainerInterface $container */
+        /** @var ContainerInterface $container */
         $container = $this->container;
         /** @var EntityRepository<CustomFieldSetCollection> $customFieldSetRepository */
         $customFieldSetRepository = $container->get('custom_field_set.repository');
@@ -175,7 +176,7 @@ class InfoPlusCommerce extends Plugin
         if ($this->container === null) {
             throw new \RuntimeException('Container not available');
         }
-        /** @var \Symfony\Component\DependencyInjection\ContainerInterface $container */
+        /** @var ContainerInterface $container */
         $container = $this->container;
         /** @var EntityRepository<CustomFieldSetCollection> $customFieldSetRepository */
         $customFieldSetRepository = $container->get('custom_field_set.repository');

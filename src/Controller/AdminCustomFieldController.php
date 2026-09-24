@@ -10,7 +10,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
-#[Route(defaults: ['_routeScope' => ['api']])]
+#[\Symfony\Component\Routing\Attribute\Route(defaults: ['_routeScope' => ['api']])]
 class AdminCustomFieldController extends AbstractController
 {
     private AdminCustomFieldService $customFieldService;
@@ -20,20 +20,20 @@ class AdminCustomFieldController extends AbstractController
         $this->customFieldService = $customFieldService;
     }
 
-    #[Route(path: '/api/_action/infoplus/customfields', name: 'api.infoplus.customfields.list', methods: ['GET'])]
+    #[\Symfony\Component\Routing\Attribute\Route(path: '/api/_action/infoplus/customfields', name: 'api.infoplus.customfields.list', methods: ['GET'])]
     public function list(Request $request, Context $context): JsonResponse
     {
         $data = $this->customFieldService->list(false, $context);
         return new JsonResponse($data);
     }
-    #[Route(path: '/api/_action/infoplus/customfields/all', name: 'api.infoplus.customfields.list.all', methods: ['GET'])]
+    #[\Symfony\Component\Routing\Attribute\Route(path: '/api/_action/infoplus/customfields/all', name: 'api.infoplus.customfields.list.all', methods: ['GET'])]
     public function listAll(Request $request, Context $context): JsonResponse
     {
         $data = $this->customFieldService->list(true, $context);
         return new JsonResponse($data);
     }
 
-    #[Route(path: '/api/_action/infoplus/customfields/{id}', name: 'api.infoplus.customfields.get', methods: ['GET'])]
+    #[\Symfony\Component\Routing\Attribute\Route(path: '/api/_action/infoplus/customfields/{id}', name: 'api.infoplus.customfields.get', methods: ['GET'])]
     public function get(string $id, Context $context): JsonResponse
     {
         $data = $this->customFieldService->get($id, $context);
@@ -43,7 +43,7 @@ class AdminCustomFieldController extends AbstractController
         return new JsonResponse($data);
     }
 
-    #[Route(path: '/api/_action/infoplus/customfields', name: 'api.infoplus.customfields.create', methods: ['POST'])]
+    #[\Symfony\Component\Routing\Attribute\Route(path: '/api/_action/infoplus/customfields', name: 'api.infoplus.customfields.create', methods: ['POST'])]
     public function create(Request $request, Context $context): JsonResponse
     {
         $data = json_decode($request->getContent(), true) ?? [];
@@ -58,7 +58,7 @@ class AdminCustomFieldController extends AbstractController
         }
     }
 
-    #[Route(path: '/api/_action/infoplus/customfields/{id}', name: 'api.infoplus.customfields.update', methods: ['PUT'])]
+    #[\Symfony\Component\Routing\Attribute\Route(path: '/api/_action/infoplus/customfields/{id}', name: 'api.infoplus.customfields.update', methods: ['PUT'])]
     public function update(string $id, Request $request, Context $context): JsonResponse
     {
         $data = json_decode($request->getContent(), true) ?? [];
@@ -73,7 +73,7 @@ class AdminCustomFieldController extends AbstractController
         }
     }
 
-    #[Route(path: '/api/_action/infoplus/customfields/{id}', name: 'api.infoplus.customfields.delete', methods: ['DELETE'])]
+    #[\Symfony\Component\Routing\Attribute\Route(path: '/api/_action/infoplus/customfields/{id}', name: 'api.infoplus.customfields.delete', methods: ['DELETE'])]
     public function delete(string $id, Context $context): JsonResponse
     {
         $this->customFieldService->delete($id, $context);

@@ -4,21 +4,24 @@
             <div class="infoplus-new-customfield">
                 <sw-card :title="$tc('infoplus.customfield.createNew')">
                     <sw-text-field
-                            :label="$tc('infoplus.customfield.columns.technicalName')"
-                            v-model:value="customField.technicalName"
-                            :required="true"/>
+                        :label="$tc('infoplus.customfield.columns.technicalName')"
+                        v-model:value="customField.technicalName"
+                        :required="true"
+                    />
                     <sw-text-field
-                            :label="$tc('infoplus.customfield.columns.label')"
-                            v-model:value="customField.label"
-                            :required="true"/>
+                        :label="$tc('infoplus.customfield.columns.label')"
+                        v-model:value="customField.label"
+                        :required="true"
+                    />
                     <sw-select-field
-                            :label="$tc('infoplus.customfield.columns.type')"
-                            v-model:value="customField.type"
-                            :options="typeOptions">
+                        :label="$tc('infoplus.customfield.columns.type')"
+                        v-model:value="customField.type"
+                        :options="typeOptions"
+                    >
                         <option
-                                v-for="typeOption in typeOptions"
-                                :key="typeOption.value"
-                                :value="typeOption.value"
+                            v-for="typeOption in typeOptions"
+                            :key="typeOption.value"
+                            :value="typeOption.value"
                         >
                             {{ typeOption.label }}
                         </option>
@@ -31,8 +34,9 @@
                         />
                     </template>
                     <sw-switch-field
-                            :label="$tc('infoplus.customfield.columns.isRequired')"
-                            v-model:value="customField.isRequired"/>
+                        :label="$tc('infoplus.customfield.columns.isRequired')"
+                        v-model:value="customField.isRequired"
+                    />
                     <sw-number-field
                         :label="$tc('infoplus.customfield.columns.position')"
                         v-model:value="customField.position"
@@ -50,14 +54,18 @@
                     />
                     <sw-switch-field
                         :label="$tc('infoplus.customfield.columns.showInStorefront')"
-                        v-model:value="customField.showInStorefront"/>
-                    <sw-button variant="primary" @click="saveCustomField">
+                        v-model:value="customField.showInStorefront"
+                    />
+                    <sw-button
+                        variant="primary"
+                        @click="saveCustomField"
+                    >
                         {{ $tc('infoplus.customfield.save') }}
                     </sw-button>
                     <sw-button
-                            variant="ghost"
-                            :disabled="isLoading"
-                            @click="$router.back()"
+                        variant="ghost"
+                        :disabled="isLoading"
+                        @click="$router.back()"
                     >
                         {{ $tc('infoplus.category.cancel') }}
                     </sw-button>

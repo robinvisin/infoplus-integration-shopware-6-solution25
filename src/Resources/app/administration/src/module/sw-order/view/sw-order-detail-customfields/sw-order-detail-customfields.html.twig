@@ -1,15 +1,34 @@
 <sw-card title="Infoplus Custom Fields">
-    <div v-if="mappedLineItems.length" class="infoplus-customfields-wrapper">
-        <div v-for="item in mappedLineItems" :key="item.id" class="infoplus-lineitem-fields">
+    <div
+        v-if="mappedLineItems.length"
+        class="infoplus-customfields-wrapper"
+    >
+        <div
+            v-for="item in mappedLineItems"
+            :key="item.id"
+            class="infoplus-lineitem-fields"
+        >
             <h4>{{ item.label || item.name }}</h4>
-            <ul v-if="item.displayCustomFields.length" class="infoplus-customfields-list">
-                <li v-for="field in item.displayCustomFields" :key="field.label">
+            <ul
+                v-if="item.displayCustomFields.length"
+                class="infoplus-customfields-list"
+            >
+                <li
+                    v-for="field in item.displayCustomFields"
+                    :key="field.label"
+                >
                     <strong class="infoplus-customfields-label">{{ field.label }}:</strong>
                     <span class="infoplus-customfields-value">{{ field.value }}</span>
                 </li>
             </ul>
-            <em v-else class="infoplus-customfields-empty">No custom fields</em>
+            <em
+                v-else
+                class="infoplus-customfields-empty"
+            >No custom fields</em>
         </div>
     </div>
-    <em v-else class="infoplus-customfields-empty">No line items found</em>
+    <em
+        v-else
+        class="infoplus-customfields-empty"
+    >No line items found</em>
 </sw-card>

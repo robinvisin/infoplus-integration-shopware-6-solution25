@@ -1,57 +1,63 @@
 {% block sw_product_detail_base_basic_info_card %}
-    <sw-card
-            :title="$tc('infoplus.common.detailsCardTitle')"
-            position-identifier="infoplus-details"
-    >
-        <template>
-            <div>
-                <span class="infoplus_message">{{ message }}</span>
-                <sw-button
-                        class="infoplus_button"
-                        :disabled="isInProgress"
-                        variant="primary"
-                        @click="syncProduct"
-                >
-                    {{ $tc('infoplus.common.syncWithInfoplus') }}
-                </sw-button>
-            </div>
-            <hr style="margin: 40px -20px; border: 1px solid #e0e0e0;">
-            <div>
-                <sw-entity-single-select
-                        entity="infoplus_category"
-                        v-model:value="selectedCategory"
-                        @update:value="onCategoryChange"
-                        required
-                        :label="$tc('infoplus.product.selectCategoryLabel')"
-                        :placeholder="$tc('infoplus.product.selectCategoryPlaceholder')"
-                        :criteria="categoryCriteria"
-                >
+<sw-card
+    :title="$tc('infoplus.common.detailsCardTitle')"
+    position-identifier="infoplus-details"
+>
+    <template>
+        <div>
+            <span class="infoplus_message">{{ message }}</span>
+            <sw-button
+                class="infoplus_button"
+                :disabled="isInProgress"
+                variant="primary"
+                @click="syncProduct"
+            >
+                {{ $tc('infoplus.common.syncWithInfoplus') }}
+            </sw-button>
+        </div>
+        <hr style="margin: 40px -20px; border: 1px solid #e0e0e0;"/>
+        <div>
+            <sw-entity-single-select
+                entity="infoplus_category"
+                v-model:value="selectedCategory"
+                @update:value="onCategoryChange"
+                required
+                :label="$tc('infoplus.product.selectCategoryLabel')"
+                :placeholder="$tc('infoplus.product.selectCategoryPlaceholder')"
+                :criteria="categoryCriteria"
+            >
                 </sw-entity-single-select>
-                <sw-entity-single-select
-                        entity="infoplus_category"
-                        v-model:value="selectedSubCategory"
-                        @update:value="onSubCategoryChange"
-                        required
-                        :label="$tc('infoplus.product.selectSubCategoryLabel')"
-                        :placeholder="$tc('infoplus.product.selectSubCategoryPlaceholder')"
-                        :criteria="subCategoryCriteria"
-                >
+            <sw-entity-single-select
+                entity="infoplus_category"
+                v-model:value="selectedSubCategory"
+                @update:value="onSubCategoryChange"
+                required
+                :label="$tc('infoplus.product.selectSubCategoryLabel')"
+                :placeholder="$tc('infoplus.product.selectSubCategoryPlaceholder')"
+                :criteria="subCategoryCriteria"
+            >
                 </sw-entity-single-select>
-                <hr style="margin: 40px -20px; border: 1px solid #e0e0e0;">
-                <div v-if="infoplusCustomFields.length">
-                    <h3>{{ $tc('infoplus.product.customFieldsTitle') }}</h3>
-                    <div v-for="field in infoplusCustomFields" :key="field.technical_name" style="margin-bottom: 10px;">
-                        <template>
-                            <sw-switch-field
-                                    :label="field.label"
-                                    v-model:value="product.customFields['infoplus_' + field.technical_name]"
-                            />
-                        </template>
-                    </div>
+            <hr style="margin: 40px -20px; border: 1px solid #e0e0e0;"/>
+            <div v-if="infoplusCustomFields.length">
+                <h3>
+                    {{ $tc('infoplus.product.customFieldsTitle') }}
+                </h3>
+                <div
+                    v-for="field in infoplusCustomFields"
+                    :key="field.technical_name"
+                    style="margin-bottom: 10px;"
+                >
+                    <template>
+                        <sw-switch-field
+                            :label="field.label"
+                            v-model:value="product.customFields['infoplus_' + field.technical_name]"
+                        />
+                    </template>
                 </div>
             </div>
-        </template>
-    </sw-card>
+        </div>
+    </template>
+</sw-card>
 
-    {% parent %}
+{% parent() %}
 {% endblock %}
