@@ -1,4 +1,4 @@
-<sw-card title="Infoplus Custom Fields">
+<mt-card title="Infoplus Custom Fields">
     <div v-if="lineItems && lineItems.length">
         <div
             v-for="item in lineItems || []"
@@ -15,19 +15,19 @@
                     class="infoplus-customfield"
                 >
                     <template v-if="field.type === 'text'">
-                        <sw-text-field
+                        <mt-text-field
                             :label="field.label"
                             :required="field.isRequired"
-                            v-model:value="item.payload.customFields['infoplus_' + field.technicalName]"
+                            v-model="item.payload.customFields['infoplus_' + field.technicalName]"
                             @update:value="updateCustomField(item, 'infoplus_' + field.technicalName, $event)"
                         />
                     </template>
 
                     <template v-else-if="field.type === 'textarea'">
-                        <sw-textarea-field
+                        <mt-textarea
                             :label="field.label"
                             :required="field.isRequired"
-                            v-model:value="item.payload.customFields['infoplus_' + field.technicalName]"
+                            v-model="item.payload.customFields['infoplus_' + field.technicalName]"
                             @update:value="updateCustomField(item, 'infoplus_' + field.technicalName, $event)"
                             :rows="3"
                         />
@@ -36,17 +36,17 @@
                     <template
                         v-else-if="field.type === 'number' || field.type === 'money'"
                     >
-                        <sw-number-field
+                        <mt-number-field
                             :label="field.label"
                             :required="field.isRequired"
-                            v-model:value="item.payload.customFields['infoplus_' + field.technicalName]"
+                            v-model="item.payload.customFields['infoplus_' + field.technicalName]"
                             @update:value="updateCustomField(item, 'infoplus_' + field.technicalName, $event)"
                             :digits="field.type === 'money' ? 2 : 0"
                         />
                     </template>
 
                     <template v-else-if="field.type === 'boolean'">
-                        <sw-switch-field
+                        <mt-switch
                             :label="field.label"
                             v-model:value="item.payload.customFields['infoplus_' + field.technicalName]"
                             @update:value="updateCustomField(item, 'infoplus_' + field.technicalName, $event)"
@@ -65,10 +65,10 @@
                     </template>
 
                     <template v-else>
-                        <sw-text-field
+                        <mt-text-field
                             :label="field.label"
                             :required="field.isRequired"
-                            v-model:value="item.payload.customFields['infoplus_' + field.technicalName]"
+                            v-model="item.payload.customFields['infoplus_' + field.technicalName]"
                             @update:value="updateCustomField(item, 'infoplus_' + field.technicalName, $event)"
                         />
                     </template>
@@ -80,13 +80,13 @@
             >No assignable custom fields for this product</em>
         </div>
         <div style="margin-top: 2rem; text-align: right;">
-            <sw-button
+            <mt-button
                 variant="primary"
                 @click="saveCustomFields"
             >
                 {{ $tc('global.default.save') }}
-            </sw-button>
+            </mt-button>
         </div>
     </div>
     <em v-else>No line items found</em>
-</sw-card>
+</mt-card>

@@ -1,19 +1,19 @@
 {% block sw_product_detail_base_basic_info_card %}
-<sw-card
+<mt-card
     :title="$tc('infoplus.common.detailsCardTitle')"
     position-identifier="infoplus-details"
 >
     <template>
         <div>
             <span class="infoplus_message">{{ message }}</span>
-            <sw-button
+            <mt-button
                 class="infoplus_button"
                 :disabled="isInProgress"
                 variant="primary"
                 @click="syncProduct"
             >
                 {{ $tc('infoplus.common.syncWithInfoplus') }}
-            </sw-button>
+            </mt-button>
         </div>
         <hr style="margin: 40px -20px; border: 1px solid #e0e0e0;"/>
         <div>
@@ -48,7 +48,7 @@
                     style="margin-bottom: 10px;"
                 >
                     <template>
-                        <sw-switch-field
+                        <mt-switch
                             :label="field.label"
                             v-model:value="product.customFields['infoplus_' + field.technical_name]"
                         />
@@ -57,7 +57,7 @@
             </div>
         </div>
     </template>
-</sw-card>
+</mt-card>
 
 {% parent() %}
 {% endblock %}

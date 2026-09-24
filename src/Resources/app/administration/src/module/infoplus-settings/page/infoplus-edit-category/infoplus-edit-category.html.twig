@@ -2,29 +2,29 @@
     <template #content>
         <sw-card-view>
             <div class="infoplus-content">
-                <sw-card :title="$tc('infoplus.category.editTitle')">
-                    <sw-text-field
-                        v-model:value="categoryName"
+                <mt-card :title="$tc('infoplus.category.editTitle')">
+                    <mt-text-field
+                        v-model="categoryName"
                         :label="$tc('infoplus.category.name')"
                         name="categoryName"
                         :placeholder="$tc('infoplus.category.namePlaceholder')"
                         :disabled="isLoading"
-                    ></sw-text-field>
-                    <sw-button
+                    ></mt-text-field>
+                    <mt-button
                         variant="primary"
                         :disabled="isLoading"
                         @click="saveCategory"
                     >
                         {{ $tc('infoplus.category.save') }}
-                    </sw-button>
-                    <sw-button
-                        variant="ghost"
+                    </mt-button>
+                    <mt-button
+                        variant="primary" ghost
                         :disabled="isLoading"
                         @click="$router.back()"
                     >
                         {{ $tc('infoplus.category.cancel') }}
-                    </sw-button>
-                </sw-card>
+                    </mt-button>
+                </mt-card>
             </div>
         </sw-card-view>
     </template>

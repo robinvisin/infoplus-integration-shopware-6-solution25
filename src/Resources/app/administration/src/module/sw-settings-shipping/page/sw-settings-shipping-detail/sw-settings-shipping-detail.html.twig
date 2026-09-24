@@ -1,5 +1,5 @@
 {% block sw_settings_shipping_detail_base %}
-<sw-card
+<mt-card
     position-identifier="infoplus-shipping-method"
     :is-loading="isLoading || carriersLoading"
     :title="$tc('infoplus.shipping.cardTitle')"
@@ -18,7 +18,7 @@
             </span>
         </template>
     </sw-single-select>
-</sw-card>
+</mt-card>
 
 {% parent() %}
 {% endblock %}

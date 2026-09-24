@@ -5,14 +5,14 @@
                 class="infoplus-content"
                 style="display: flex; justify-content: flex-end; margin-bottom: 20px;"
             >
-                <sw-button
+                <mt-button
                     variant="secondary"
                     @click="$router.back()"
                 >
                     {{ $tc('infoplus.logs.back') }}
-                </sw-button>
+                </mt-button>
             </div>
-            <sw-card
+            <mt-card
                 :title="$tc('infoplus.logs.title', 0, { file: file })"
                 :is-loading="isLoading"
             >
@@ -39,11 +39,11 @@
                         :page="pagination.page"
                         @page-change="onPageChange"
                     />
-                    <sw-button @click="downloadLog">
+                    <mt-button @click="downloadLog">
                         {{ $tc('infoplus.logs.download') }}
-                    </sw-button>
+                    </mt-button>
                 </template>
-            </sw-card>
+            </mt-card>
         </sw-card-view>
     </template>
 </sw-page>

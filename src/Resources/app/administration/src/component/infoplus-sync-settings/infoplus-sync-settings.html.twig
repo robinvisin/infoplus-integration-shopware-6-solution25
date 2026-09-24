@@ -1,6 +1,6 @@
 <template>
     <sw-container>
-        <sw-card
+        <mt-card
             :title="$tc('infoplus.settings.syncSettings')"
             :isLoading="isLoading"
             style="margin-top:20px;"
@@ -42,17 +42,17 @@
                     :help-text="$tc('infoplus.settings.syncableOrderStatesHelp')"
                     :options="orderStateOptions"
                 />
-                <sw-button
+                <mt-button
                     variant="primary"
                     @click="saveConfig"
                 >
                     {{ $tc('infoplus.settings.save') }}
-                </sw-button>
+                </mt-button>
             </div>
             <hr
                 style="margin: 24px 0; border: 0; border-top: 1px solid #d1d9e0;"
             />
             <sync-button/>
-        </sw-card>
+        </mt-card>
     </sw-container>
 </template>

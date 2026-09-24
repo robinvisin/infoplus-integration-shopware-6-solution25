@@ -2,18 +2,18 @@
     <template #content>
         <sw-card-view>
             <div class="infoplus-edit-customfield">
-                <sw-card :title="$tc('infoplus.customfield.edit')">
-                    <sw-text-field
+                <mt-card :title="$tc('infoplus.customfield.edit')">
+                    <mt-text-field
                         :label="$tc('infoplus.customfield.columns.technicalName')"
-                        v-model:value="customField.technicalName"
+                        v-model="customField.technicalName"
                         :required="true"
                     />
-                    <sw-text-field
+                    <mt-text-field
                         :label="$tc('infoplus.customfield.columns.label')"
-                        v-model:value="customField.label"
+                        v-model="customField.label"
                         :required="true"
                     />
-                    <sw-select-field
+                    <mt-select
                         :label="$tc('infoplus.customfield.columns.type')"
                         v-model:value="customField.type"
                         :options="typeOptions"
@@ -25,51 +25,51 @@
                         >
                             {{ typeOption.label }}
                         </option>
-                    </sw-select-field>
+                    </mt-select>
                     <template v-if="customField.type === 'select'">
-                        <sw-textarea-field
+                        <mt-textarea
                             :label="$tc('infoplus.customfield.columns.options')"
-                            v-model:value="customField.optionsString"
+                            v-model="customField.optionsString"
                             :placeholder="$tc('infoplus.customfield.optionsPlaceholderNewline')"
                         />
                     </template>
-                    <sw-switch-field
+                    <mt-switch
                         :label="$tc('infoplus.customfield.columns.isRequired')"
                         v-model:value="customField.isRequired"
                     />
-                    <sw-number-field
+                    <mt-number-field
                         :label="$tc('infoplus.customfield.columns.position')"
-                        v-model:value="customField.position"
+                        v-model="customField.position"
                         :required="false"
                     />
-                    <sw-number-field
+                    <mt-number-field
                         :label="$tc('infoplus.customfield.columns.staticPrice')"
-                        v-model:value="customField.staticPrice"
+                        v-model="customField.staticPrice"
                         :digits="2"
                         :placeholder="$tc('infoplus.customfield.staticPriceHelp')"
                     />
-                    <sw-switch-field
+                    <mt-switch
                         :label="$tc('infoplus.customfield.columns.active')"
                         v-model:value="customField.active"
                     />
-                    <sw-switch-field
+                    <mt-switch
                         :label="$tc('infoplus.customfield.columns.showInStorefront')"
                         v-model:value="customField.showInStorefront"
                     />
-                    <sw-button
+                    <mt-button
                         variant="primary"
                         @click="saveCustomField"
                     >
                         {{ $tc('infoplus.customfield.save') }}
-                    </sw-button>
-                    <sw-button
-                        variant="ghost"
+                    </mt-button>
+                    <mt-button
+                        variant="primary" ghost
                         :disabled="isLoading"
                         @click="$router.back()"
                     >
                         {{ $tc('infoplus.category.cancel') }}
-                    </sw-button>
-                </sw-card>
+                    </mt-button>
+                </mt-card>
             </div>
         </sw-card-view>
     </template>

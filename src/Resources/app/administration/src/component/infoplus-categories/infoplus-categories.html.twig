@@ -4,14 +4,14 @@
             class="infoplus-content"
             style="display: flex; justify-content: flex-end; margin-bottom: 20px;"
         >
-            <sw-button
+            <mt-button
                 variant="primary"
                 @click="addNewCategory"
             >
                 {{ $tc('infoplus.category.createNew') }}
-            </sw-button>
+            </mt-button>
         </div>
-        <sw-card>
+        <mt-card>
             <sw-data-grid
                 :dataSource="categories"
                 :actions="true"
@@ -30,7 +30,7 @@
                     </sw-context-menu-item>
                 </template>
             </sw-data-grid>
-        </sw-card>
+        </mt-card>
         <sw-modal
             v-if="showDeleteModal"
             :title="$tc('infoplus.category.deleteModalTitle')"
@@ -40,19 +40,19 @@
                 {{ $tc('infoplus.category.deleteConfirmation') }}
             </p>
             <template #modal-footer>
-                <sw-button
+                <mt-button
                     @click="cancelDeleteCategory"
                     size="small"
                 >
                     {{ $tc('global.default.cancel') }}
-                </sw-button>
-                <sw-button
+                </mt-button>
+                <mt-button
                     @click="confirmDeleteCategory"
-                    variant="danger"
+                    variant="critical"
                     size="small"
                 >
                     {{ $tc('global.default.delete') }}
-                </sw-button>
+                </mt-button>
             </template>
         </sw-modal>
     </div>
