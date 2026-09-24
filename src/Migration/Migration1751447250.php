@@ -23,7 +23,7 @@ class Migration1751447250 extends MigrationStep
         $needsAlter = false;
         if (isset($columns['id'])) {
             $idColumn = $columns['id'];
-            if (strtolower($idColumn->getType()->getName()) !== 'binary' || $idColumn->getLength() !== 16) {
+            if (strtolower(\Doctrine\DBAL\Types\Type::lookupName($idColumn->getType())) !== 'binary' || $idColumn->getLength() !== 16) {
                 $needsAlter = true;
             }
         } else {
