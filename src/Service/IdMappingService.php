@@ -39,7 +39,7 @@ class IdMappingService
             new EqualsFilter('shopwareId', $shopwareId)
         );
         /** @var IdMappingEntity|null $entity */
-        $entity = $this->idMappingRepository->search($criteria, $context)->first();
+        $entity = $this->idMappingRepository->search($criteria, $context)->getEntities()->first();
         return $entity?->getInfoplusId();
     }
 
@@ -57,7 +57,7 @@ class IdMappingService
             new EqualsFilter('shopwareId', $shopwareId)
         );
         /** @var IdMappingEntity|null $result */
-        $result = $this->idMappingRepository->search($criteria, $context)->first();
+        $result = $this->idMappingRepository->search($criteria, $context)->getEntities()->first();
         if (!$result) {
             return null;
         }
@@ -128,7 +128,7 @@ class IdMappingService
         );
 
         /** @var IdMappingEntity|null $idMapping */
-        $idMapping = $this->idMappingRepository->search($criteria, $context)->first();
+        $idMapping = $this->idMappingRepository->search($criteria, $context)->getEntities()->first();
         if ($idMapping) {
             $this->idMappingRepository->update([
                 [
@@ -184,7 +184,7 @@ class IdMappingService
         );
 
         /** @var OrderSyncEntity|null $orderSync */
-        $orderSync = $this->orderSyncRepository->search($criteria, $context)->first();
+        $orderSync = $this->orderSyncRepository->search($criteria, $context)->getEntities()->first();
         if ($orderSync) {
             $this->orderSyncRepository->update([
                 [
@@ -210,7 +210,7 @@ class IdMappingService
         );
 
         /** @var OrderSyncEntity|null $orderSync */
-        $orderSync = $this->orderSyncRepository->search($criteria, $context)->first();
+        $orderSync = $this->orderSyncRepository->search($criteria, $context)->getEntities()->first();
         if ($orderSync) {
             $this->orderSyncRepository->update([
                 [
@@ -227,7 +227,7 @@ class IdMappingService
         $criteria = new Criteria();
         $criteria->addFilter(new EqualsFilter('shopwareOrderId', $shopwareOrderId));
         /** @var OrderSyncEntity|null $orderSync */
-        $orderSync = $this->orderSyncRepository->search($criteria, $context)->first();
+        $orderSync = $this->orderSyncRepository->search($criteria, $context)->getEntities()->first();
         return $orderSync?->getInfoplusId();
     }
 
@@ -241,7 +241,7 @@ class IdMappingService
         $criteria = new Criteria();
         $criteria->addFilter(new EqualsFilter('shopwareOrderId', $shopwareOrderId));
         /** @var OrderSyncEntity|null $result */
-        $result = $this->orderSyncRepository->search($criteria, $context)->first();
+        $result = $this->orderSyncRepository->search($criteria, $context)->getEntities()->first();
         if (!$result) {
             return null;
         }
@@ -268,7 +268,7 @@ class IdMappingService
         $criteria->addFilter(new EqualsFilter('shopwareOrderId', $shopwareOrderId));
 
         /** @var OrderSyncEntity|null $result */
-        $result = $this->orderSyncRepository->search($criteria, $context)->first();
+        $result = $this->orderSyncRepository->search($criteria, $context)->getEntities()->first();
         if (!$result) {
             return null;
         }
@@ -297,7 +297,7 @@ class IdMappingService
             new EqualsAnyFilter('orderStatus', $this->configService->getSyncableOrderStates())
         );
 
-        return $this->orderSyncRepository->search($criteria, $context)->getElements();
+        return $this->orderSyncRepository->search($criteria, $context)->getEntities()->getElements();
     }
 
     public function deleteInfoplusId(string $entityType, string $shopwareId, Context $context): void
@@ -309,7 +309,7 @@ class IdMappingService
         );
 
         /** @var OrderSyncEntity|null $orderSync */
-        $orderSync = $this->orderSyncRepository->search($criteria, $context)->first();
+        $orderSync = $this->orderSyncRepository->search($criteria, $context)->getEntities()->first();
         if ($orderSync) {
             $this->orderSyncRepository->delete([[ 'id' => $orderSync->getId() ]], $context);
         }
@@ -324,7 +324,7 @@ class IdMappingService
         );
 
         /** @var IdMappingEntity|null $idMapping */
-        $idMapping = $this->idMappingRepository->search($criteria, $context)->first();
+        $idMapping = $this->idMappingRepository->search($criteria, $context)->getEntities()->first();
         if ($idMapping) {
             $this->idMappingRepository->delete([[ 'id' => $idMapping->getId() ]], $context);
         }

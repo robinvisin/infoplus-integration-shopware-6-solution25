@@ -392,7 +392,7 @@ class AdminSyncController extends AbstractController
         $machineCriteria->addFilter(new EqualsFilter('technicalName', 'order_transaction.state'));
 
         /** @var StateMachineEntity|null $stateMachine */
-        $stateMachine = $this->stateMachineRepository->search($machineCriteria, $context)->first();
+        $stateMachine = $this->stateMachineRepository->search($machineCriteria, $context)->getEntities()->first();
 
         if (!$stateMachine) {
             return new JsonResponse(['data' => []]);
@@ -428,7 +428,7 @@ class AdminSyncController extends AbstractController
         $machineCriteria->addFilter(new EqualsFilter('technicalName', 'order.state'));
 
         /** @var StateMachineEntity|null $stateMachine */
-        $stateMachine = $this->stateMachineRepository->search($machineCriteria, $context)->first();
+        $stateMachine = $this->stateMachineRepository->search($machineCriteria, $context)->getEntities()->first();
 
         if (!$stateMachine) {
             return new JsonResponse(['data' => []]);

@@ -88,7 +88,7 @@ class InventorySyncService
         try {
             $criteria = new Criteria();
             $criteria->addFilter(new EqualsFilter('productNumber', $sku));
-            $product = $this->productRepository->search($criteria, $context)->first();
+            $product = $this->productRepository->search($criteria, $context)->getEntities()->first();
             /** @var ProductEntity|null $product */
             if (!$product) {
                 $this->logger->warning('[InfoPlus] No Shopware product found with SKU ' . $sku);

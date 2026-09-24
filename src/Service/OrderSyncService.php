@@ -50,7 +50,7 @@ class OrderSyncService
         $criteria->addAssociation('orderCustomer');
 
         $orders = $this->orderRepository->search($criteria, $context);
-        $orderIds = array_values($orders->getIds());
+        $orderIds = array_values($orders->getEntities()->getIds());
         return $this->syncOrders($orderIds, $context);
     }
 
@@ -397,7 +397,7 @@ class OrderSyncService
         $criteria = new Criteria([$shopwareOrderId]);
         $criteria->addAssociation('transactions');
         $criteria->addAssociation('deliveries');
-        $order = $this->orderRepository->search($criteria, $context)->first();
+        $order = $this->orderRepository->search($criteria, $context)->getEntities()->first();
 
         if (!$order instanceof OrderEntity) {
             $this->logger->warning('[InfoPlus] Shopware order not found', ['orderId' => $shopwareOrderId]);

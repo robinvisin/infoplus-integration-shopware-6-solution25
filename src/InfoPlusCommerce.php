@@ -71,7 +71,7 @@ class InfoPlusCommerce extends Plugin
 
         // Ensure the Custom Field Set exists (search by name, reuse ID if found)
         $setCriteria = (new Criteria())->addFilter(new EqualsFilter('name', $setName));
-        $existingSet = $customFieldSetRepository->search($setCriteria, $context)->first();
+        $existingSet = $customFieldSetRepository->search($setCriteria, $context)->getEntities()->first();
         /** @var CustomFieldSetEntity|null $existingSet */
         $setId = $existingSet ? $existingSet->getId() : Uuid::randomHex();
 
@@ -100,7 +100,7 @@ class InfoPlusCommerce extends Plugin
             $relCriteria = (new Criteria())
                 ->addFilter(new EqualsFilter('customFieldSetId', $setId))
                 ->addFilter(new EqualsFilter('entityName', 'product'));
-            $existingRel = $relationRepository->search($relCriteria, $context)->first();
+            $existingRel = $relationRepository->search($relCriteria, $context)->getEntities()->first();
             if (!$existingRel) {
                 $relationRepository->create([[
                     'id' => Uuid::randomHex(),
@@ -187,7 +187,7 @@ class InfoPlusCommerce extends Plugin
 
         // Find set ID by name
         $setCriteria = (new Criteria())->addFilter(new EqualsFilter('name', $setName));
-        $existingSet = $customFieldSetRepository->search($setCriteria, $context)->first();
+        $existingSet = $customFieldSetRepository->search($setCriteria, $context)->getEntities()->first();
         /** @var CustomFieldSetEntity|null $existingSet */
         if (!$existingSet) {
             return; // Nothing to delete

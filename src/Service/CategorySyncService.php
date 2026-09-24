@@ -225,7 +225,7 @@ class CategorySyncService
         $this->logger->info('[InfoPlus] Fetching category by ID', ['id' => $id]);
 
         $criteria = new Criteria([$id]);
-        $category = $this->infoplusCategoryRepository->search($criteria, $context)->first();
+        $category = $this->infoplusCategoryRepository->search($criteria, $context)->getEntities()->first();
         /** @var InfoplusCategoryEntity|null $category */
 
         if (!$category) {
@@ -253,7 +253,7 @@ class CategorySyncService
         $this->logger->info('[InfoPlus] Updating category', ['id' => $id, 'name' => $name]);
 
         $criteria = new Criteria([$id]);
-        $category = $this->infoplusCategoryRepository->search($criteria, $context)->first();
+        $category = $this->infoplusCategoryRepository->search($criteria, $context)->getEntities()->first();
         /** @var InfoplusCategoryEntity|null $category */
 
         if (!$category) {
@@ -309,7 +309,7 @@ class CategorySyncService
         $this->logger->info('[InfoPlus] Delete category triggered', ['id' => $id]);
 
         // Fetch category to get idForInfoplus and isSubCategory
-        $category = $this->infoplusCategoryRepository->search(new Criteria([$id]), $context)->first();
+        $category = $this->infoplusCategoryRepository->search(new Criteria([$id]), $context)->getEntities()->first();
         /** @var InfoplusCategoryEntity|null $category */
 
         if (!$category) {
