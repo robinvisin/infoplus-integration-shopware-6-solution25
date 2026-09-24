@@ -11,10 +11,6 @@ class IdMappingEntity extends Entity
 {
     use EntityIdTrait;
 
-    /**
-     * @var String
-     */
-    protected $id;
     protected string $entityType;
     protected string $shopwareId;
     protected int $infoplusId;

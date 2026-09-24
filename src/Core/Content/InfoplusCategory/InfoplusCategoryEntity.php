@@ -11,10 +11,6 @@ class InfoplusCategoryEntity extends Entity
 {
     use EntityIdTrait;
 
-    /**
-     * @var String
-     */
-    protected $id;
 
     protected int $internalId;
     protected string $name;

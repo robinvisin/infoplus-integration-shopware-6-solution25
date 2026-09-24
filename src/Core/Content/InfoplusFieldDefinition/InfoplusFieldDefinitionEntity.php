@@ -9,10 +9,6 @@ class InfoplusFieldDefinitionEntity extends Entity
 {
     use EntityIdTrait;
 
-    /**
-     * @var string
-     */
-    protected $id;
 
     protected string $technicalName;
     protected string $label;
