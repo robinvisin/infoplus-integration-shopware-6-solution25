@@ -122,7 +122,6 @@ class SyncCommand extends Command
         try {
             $criteria = new Criteria();
             $orderIds = $this->orderRepository->searchIds($criteria, $context)->getIds();
-            $orderIds = array_map(fn($id): string => is_array($id) ? (string) (reset($id) ?: '') : (string) $id, $orderIds);
             /** @var array<string> $orderIds */
             if (empty($orderIds)) {
                 $output->writeln('No orders found for synchronization.');

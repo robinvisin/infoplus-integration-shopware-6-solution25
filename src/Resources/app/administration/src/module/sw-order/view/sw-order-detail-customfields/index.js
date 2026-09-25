@@ -105,7 +105,7 @@ Shopware.Component.register('sw-order-detail-customfields', {
             } else {
                 const staticPrice = def.staticPrice;
                 if (staticPrice !== undefined && staticPrice !== null) {
-                    let apply = false;
+                    let apply;
                     if (type === 'boolean') {
                         apply = !!value && String(value) !== '0';
                     } else {

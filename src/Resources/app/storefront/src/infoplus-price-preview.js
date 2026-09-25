@@ -95,7 +95,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     var selected = el.options[el.selectedIndex];
                     if (selected && selected.value) {
                         var attr = selected.getAttribute('data-price');
-                        var addAmount = 0;
+                        var addAmount;
                         if (attr !== null && attr !== undefined && String(attr).trim() !== '') {
                             addAmount = Math.max(0, parseNumber(attr));
                         } else {

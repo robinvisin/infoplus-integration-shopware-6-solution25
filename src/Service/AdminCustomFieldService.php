@@ -70,7 +70,7 @@ class AdminCustomFieldService
         $criteria = new Criteria([$id]);
         $result = $this->customFieldRepository->search($criteria, $context);
         /** @var InfoplusFieldDefinitionEntity|null $entity */
-        $entity = $result->get($id);
+        $entity = $result->getEntities()->get($id);
 
         if (!$entity) {
             return null;

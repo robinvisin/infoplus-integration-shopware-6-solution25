@@ -282,7 +282,7 @@ class IdMappingService
     }
 
     /**
-     * @return array<int,mixed>
+     * @return array<string, \InfoPlusCommerce\Core\Content\OrderSync\OrderSyncEntity>
      */
     public function getPendingShipmentOrders(Context $context, ?string $id = null): array
     {
