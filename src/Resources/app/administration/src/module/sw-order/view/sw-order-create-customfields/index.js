@@ -1,7 +1,7 @@
 import template from './sw-order-create-customfields.html.twig';
 import './sw-order-create-customfields.css';
 const { Criteria } = Shopware.Data;
-const { State, Mixin } = Shopware;
+const { Store, Mixin } = Shopware;
 
 Shopware.Component.register('sw-order-create-customfields', {
     template,
@@ -27,10 +27,10 @@ Shopware.Component.register('sw-order-create-customfields', {
             return result;
         },
         cart() {
-            return State.get('swOrder').cart;
+            return Store.get('swOrder').cart;
         },
         customer(){
-            return State.get('swOrder').customer;
+            return Store.get('swOrder').customer;
         },
         salesChannelId() {
             return this.customer?.salesChannelId || (this.salesChannelContext && this.salesChannelContext.salesChannelId) || '';
@@ -56,7 +56,7 @@ Shopware.Component.register('sw-order-create-customfields', {
     },
     methods: {
         loadLineItems() {
-            const cart = State.get('swOrder').cart;
+            const cart = Store.get('swOrder').cart;
             this.lineItems = cart && cart.lineItems ? cart.lineItems : [];
         },
         loadInfoplusCustomFields() {
@@ -323,7 +323,7 @@ Shopware.Component.register('sw-order-create-customfields', {
             try {
                 await this.pushInfoplusToCartPayload();
                 this.persistLineItemsToLocalStorage();
-                await State.dispatch('swOrder/getCart', { salesChannelId: this.salesChannelId, contextToken: this.contextToken });
+                await Store.get('swOrder').getCart({ salesChannelId: this.salesChannelId, contextToken: this.contextToken });
                 this.createNotificationSuccess({
                     title: 'Success',
                     message: 'Custom fields saved successfully.'
