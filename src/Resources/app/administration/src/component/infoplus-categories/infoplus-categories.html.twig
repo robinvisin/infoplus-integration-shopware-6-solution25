@@ -1,59 +1,57 @@
-<template>
-    <div class="infoplus-categories">
-        <div
-            class="infoplus-content"
-            style="display: flex; justify-content: flex-end; margin-bottom: 20px;"
+<div class="infoplus-categories">
+    <div
+        class="infoplus-content"
+        style="display: flex; justify-content: flex-end; margin-bottom: 20px;"
+    >
+        <mt-button
+            variant="primary"
+            @click="addNewCategory"
         >
-            <mt-button
-                variant="primary"
-                @click="addNewCategory"
-            >
-                {{ $tc('infoplus.category.createNew') }}
-            </mt-button>
-        </div>
-        <mt-card>
-            <sw-data-grid
-                :dataSource="categories"
-                :actions="true"
-                :columns="[
-                    { property: 'internalId', label: $tc('infoplus.category.columns.infoplusId') },
-                    { property: 'name', label: $tc('infoplus.category.columns.name') }
-                    ]"
-                :showSelection="false"
-            >
-                <template #actions="{ item }">
-                    <sw-context-menu-item @click="editCategory(item)">
-                        {{ $tc('infoplus.category.edit') }}
-                    </sw-context-menu-item>
-                    <sw-context-menu-item @click="deleteCategory(item)">
-                        {{ $tc('infoplus.category.delete') }}
-                    </sw-context-menu-item>
-                </template>
-            </sw-data-grid>
-        </mt-card>
-        <sw-modal
-            v-if="showDeleteModal"
-            :title="$tc('infoplus.category.deleteModalTitle')"
-            @modal-close="cancelDeleteCategory"
-        >
-            <p>
-                {{ $tc('infoplus.category.deleteConfirmation') }}
-            </p>
-            <template #modal-footer>
-                <mt-button
-                    @click="cancelDeleteCategory"
-                    size="small"
-                >
-                    {{ $tc('global.default.cancel') }}
-                </mt-button>
-                <mt-button
-                    @click="confirmDeleteCategory"
-                    variant="critical"
-                    size="small"
-                >
-                    {{ $tc('global.default.delete') }}
-                </mt-button>
-            </template>
-        </sw-modal>
+            {{ $tc('infoplus.category.createNew') }}
+        </mt-button>
     </div>
-</template>
+    <mt-card>
+        <sw-data-grid
+            :dataSource="categories"
+            :actions="true"
+            :columns="[
+                { property: 'internalId', label: $tc('infoplus.category.columns.infoplusId') },
+                { property: 'name', label: $tc('infoplus.category.columns.name') }
+                ]"
+            :showSelection="false"
+        >
+            <template #actions="{ item }">
+                <sw-context-menu-item @click="editCategory(item)">
+                    {{ $tc('infoplus.category.edit') }}
+                </sw-context-menu-item>
+                <sw-context-menu-item @click="deleteCategory(item)">
+                    {{ $tc('infoplus.category.delete') }}
+                </sw-context-menu-item>
+            </template>
+        </sw-data-grid>
+    </mt-card>
+    <sw-modal
+        v-if="showDeleteModal"
+        :title="$tc('infoplus.category.deleteModalTitle')"
+        @modal-close="cancelDeleteCategory"
+    >
+        <p>
+            {{ $tc('infoplus.category.deleteConfirmation') }}
+        </p>
+        <template #modal-footer>
+            <mt-button
+                @click="cancelDeleteCategory"
+                size="small"
+            >
+                {{ $tc('global.default.cancel') }}
+            </mt-button>
+            <mt-button
+                @click="confirmDeleteCategory"
+                variant="critical"
+                size="small"
+            >
+                {{ $tc('global.default.delete') }}
+            </mt-button>
+        </template>
+    </sw-modal>
+</div>

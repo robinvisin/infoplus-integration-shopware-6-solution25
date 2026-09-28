@@ -1,42 +1,40 @@
-<template>
-    <mt-card
-        title="InfoPlus Logs"
-        :is-loading="isLoading"
-    >
-        <template v-if="error">
-            <sw-alert variant="error">{{ error }}</sw-alert>
-        </template>
+<mt-card
+    title="InfoPlus Logs"
+    :is-loading="isLoading"
+>
+    <template v-if="error">
+        <sw-alert variant="error">{{ error }}</sw-alert>
+    </template>
 
-        <template v-else>
-            <div v-if="paginatedLogs.length">
-                <sw-data-grid
-                    :dataSource="paginatedLogs"
-                    :actions="true"
-                    :columns="columns"
-                    :showSelection="false"
-                    @click="onViewLog(item)"
-                >
-                    <template #actions="{ item }">
-                        <sw-context-menu-item @click="onViewLog(item)">
-                            {{ $tc('infoplus.logs.actions.view') }}
-                        </sw-context-menu-item>
-                        <sw-context-menu-item @click="onDownloadLog(item)">
-                            {{ $tc('infoplus.logs.actions.download') }}
-                        </sw-context-menu-item>
-                    </template>
-                </sw-data-grid>
-                <div>
-                    <sw-pagination
-                        :total="logs.length"
-                        :limit="pagination.limit"
-                        :page="pagination.page"
-                        @page-change="onPageChange"
-                    />
-                </div>
+    <template v-else>
+        <div v-if="paginatedLogs.length">
+            <sw-data-grid
+                :dataSource="paginatedLogs"
+                :actions="true"
+                :columns="columns"
+                :showSelection="false"
+                @click="onViewLog(item)"
+            >
+                <template #actions="{ item }">
+                    <sw-context-menu-item @click="onViewLog(item)">
+                        {{ $tc('infoplus.logs.actions.view') }}
+                    </sw-context-menu-item>
+                    <sw-context-menu-item @click="onDownloadLog(item)">
+                        {{ $tc('infoplus.logs.actions.download') }}
+                    </sw-context-menu-item>
+                </template>
+            </sw-data-grid>
+            <div>
+                <sw-pagination
+                    :total="logs.length"
+                    :limit="pagination.limit"
+                    :page="pagination.page"
+                    @page-change="onPageChange"
+                />
             </div>
-            <p v-else>
-                {{ $tc('infoplus.logs.noLogsAvailable') }}
-            </p>
-        </template>
-    </mt-card>
-</template>
+        </div>
+        <p v-else>
+            {{ $tc('infoplus.logs.noLogsAvailable') }}
+        </p>
+    </template>
+</mt-card>

@@ -1,37 +1,35 @@
-<template>
-    <div class="infoplus-customfields">
-        <div
-            class="infoplus-content"
-            style="display: flex; justify-content: flex-end; margin-bottom: 20px;"
+<div class="infoplus-customfields">
+    <div
+        class="infoplus-content"
+        style="display: flex; justify-content: flex-end; margin-bottom: 20px;"
+    >
+        <mt-button
+            variant="primary"
+            @click="addNewCustomField"
         >
-            <mt-button
-                variant="primary"
-                @click="addNewCustomField"
-            >
-                {{ $tc('infoplus.customfield.createNew') }}
-            </mt-button>
-        </div>
-        <mt-card>
-            <sw-data-grid
-                :dataSource="customFields"
-                :actions="true"
-                :columns="[
-                    { property: 'technicalName', label: $tc('infoplus.customfield.columns.technicalName') },
-                    { property: 'label', label: $tc('infoplus.customfield.columns.label') },
-                    { property: 'type', label: $tc('infoplus.customfield.columns.type') },
-                    { property: 'active', label: $tc('infoplus.customfield.columns.active') }
-                    ]"
-                :showSelection="false"
-            >
-                <template #actions="{ item }">
-                    <sw-context-menu-item @click="editCustomField(item)">
-                        {{ $tc('infoplus.customfield.edit') }}
-                    </sw-context-menu-item>
-                    <sw-context-menu-item @click="deleteCustomField(item)">
-                        {{ $tc('infoplus.customfield.delete') }}
-                    </sw-context-menu-item>
-                </template>
-            </sw-data-grid>
-        </mt-card>
+            {{ $tc('infoplus.customfield.createNew') }}
+        </mt-button>
     </div>
-</template>
+    <mt-card>
+        <sw-data-grid
+            :dataSource="customFields"
+            :actions="true"
+            :columns="[
+                { property: 'technicalName', label: $tc('infoplus.customfield.columns.technicalName') },
+                { property: 'label', label: $tc('infoplus.customfield.columns.label') },
+                { property: 'type', label: $tc('infoplus.customfield.columns.type') },
+                { property: 'active', label: $tc('infoplus.customfield.columns.active') }
+                ]"
+            :showSelection="false"
+        >
+            <template #actions="{ item }">
+                <sw-context-menu-item @click="editCustomField(item)">
+                    {{ $tc('infoplus.customfield.edit') }}
+                </sw-context-menu-item>
+                <sw-context-menu-item @click="deleteCustomField(item)">
+                    {{ $tc('infoplus.customfield.delete') }}
+                </sw-context-menu-item>
+            </template>
+        </sw-data-grid>
+    </mt-card>
+</div>
