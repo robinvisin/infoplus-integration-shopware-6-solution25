@@ -127,16 +127,24 @@ class CustomerSyncService
                 $data['state'] = $mappedState;
             }
 
-            $existingCustomer = $this->infoplusApiClient->getCustomerByCustomerNo($lobId, $data['customerNo']);
-            if ($existingCustomer === null) {
-                $this->logger->error('[InfoPlus] Failed to fetch customer by customerNo', ['customerNo' => $data['customerNo'], 'error' => $existingCustomer]);
+            // A customer InfoPlus has never seen is the normal case for a new Shopware customer,
+            // and it must fall through to the create below. Only a lookup that actually FAILED
+            // is a reason to skip: acting on a failed lookup would create a duplicate customer
+            // every time InfoPlus is briefly unreachable.
+            $lookup = $this->infoplusApiClient->findCustomerByCustomerNo((string) $lobId, $data['customerNo']);
+            if (!$lookup['ok']) {
+                $this->logger->error('[InfoPlus] Customer lookup failed; skipping to avoid creating a duplicate', [
+                    'customerNo' => $data['customerNo'],
+                ]);
                 $results[] = [
                     'customerNo' => $data['customerNo'],
                     'success' => false,
-                    'error' => $existingCustomer
+                    'error' => 'lookup failed - InfoPlus did not answer',
                 ];
                 continue;
             }
+            $existingCustomer = $lookup['customer'];
+
             if ($existingCustomer) {
                 $data['id'] = $existingCustomer['id'];
                 $result = $this->infoplusApiClient->updateCustomer($data);

@@ -373,6 +373,38 @@ class InfoplusApiClient
     /**
      * @return array<string,mixed>|null
      */
+    /**
+     * Looks a customer up by customerNo, distinguishing "not in InfoPlus" from "the call failed".
+     *
+     * getCustomerByCustomerNo() cannot tell those apart: get() turns any transport or API error
+     * into null, fetchAllPages() turns that into [], and the caller sees the same empty result it
+     * would get for a customer that genuinely does not exist. Acting on that ambiguity is how a
+     * caller ends up creating a duplicate customer every time InfoPlus is briefly unreachable.
+     *
+     * This calls get() directly, where the distinction still survives: null means the request
+     * failed, [] means InfoPlus answered and holds no such customer.
+     *
+     * @return array{ok: bool, customer: array<string,mixed>|null}
+     *     ok=false  the lookup itself failed — the caller must not assume anything about
+     *               whether the customer exists
+     *     ok=true   InfoPlus answered; customer is the record, or null if there is none
+     */
+    public function findCustomerByCustomerNo(string $lobId, string $customerNo): array
+    {
+        $response = $this->get('v3.0/customer/search', [
+            'filter' => "lobId eq $lobId and customerNo eq '$customerNo'",
+            'page' => 1,
+            'limit' => 1,
+        ]);
+
+        if ($response === null) {
+            return ['ok' => false, 'customer' => null];
+        }
+
+        $rows = array_values($response);
+        return ['ok' => true, 'customer' => $rows[0] ?? null];
+    }
+
     public function getCustomerByCustomerNo(string $lobId, string $customerNo): ?array
     {
         $query = [
