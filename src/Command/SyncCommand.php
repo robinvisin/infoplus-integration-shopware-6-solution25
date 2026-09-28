@@ -46,6 +46,15 @@ class SyncCommand extends Command
             if (isset($customerResults['status']) && $customerResults['status'] === 'no customers found') {
                 $output->writeln('No customers found for synchronization.');
                 $this->logger->warning('[InfoPlus] No customers found for sync');
+            } elseif (isset($customerResults['status']) && $customerResults['status'] === 'error') {
+                // The service reports a failure it could not get past - a dead API, missing
+                // carriers - as ['status' => 'error', 'error' => ...], NOT as a list of
+                // per-record results. Falling through to the loop below iterates that array's
+                // VALUES and prints one meaningless "Failed to sync customer -: unknown
+                // error" line per key, naming no record and hiding the actual reason.
+                $reason = is_string($customerResults['error'] ?? null) ? $customerResults['error'] : 'no reason given';
+                $output->writeln(sprintf('Customer sync could not run: %s', $reason));
+                $this->logger->error('[InfoPlus] Customer sync could not run', ['error' => $reason]);
             } else {
                 /** @var array<string,mixed> $result */
                 foreach ($customerResults as $result) {
@@ -72,6 +81,15 @@ class SyncCommand extends Command
             if (isset($categoryResults['status']) && $categoryResults['status'] === 'no categories found') {
                 $output->writeln('No categories found for synchronization.');
                 $this->logger->warning('[InfoPlus] No categories found for sync');
+            } elseif (isset($categoryResults['status']) && $categoryResults['status'] === 'error') {
+                // The service reports a failure it could not get past - a dead API, missing
+                // carriers - as ['status' => 'error', 'error' => ...], NOT as a list of
+                // per-record results. Falling through to the loop below iterates that array's
+                // VALUES and prints one meaningless "Failed to sync category -: unknown
+                // error" line per key, naming no record and hiding the actual reason.
+                $reason = is_string($categoryResults['error'] ?? null) ? $categoryResults['error'] : 'no reason given';
+                $output->writeln(sprintf('Category sync could not run: %s', $reason));
+                $this->logger->error('[InfoPlus] Category sync could not run', ['error' => $reason]);
             } else {
                 /** @var array<string,mixed> $result */
                 foreach ($categoryResults as $result) {
@@ -98,6 +116,15 @@ class SyncCommand extends Command
             if (isset($productResults['status']) && $productResults['status'] === 'no products found') {
                 $output->writeln('No products found for synchronization.');
                 $this->logger->warning('[InfoPlus] No products found for sync');
+            } elseif (isset($productResults['status']) && $productResults['status'] === 'error') {
+                // The service reports a failure it could not get past - a dead API, missing
+                // carriers - as ['status' => 'error', 'error' => ...], NOT as a list of
+                // per-record results. Falling through to the loop below iterates that array's
+                // VALUES and prints one meaningless "Failed to sync product -: unknown
+                // error" line per key, naming no record and hiding the actual reason.
+                $reason = is_string($productResults['error'] ?? null) ? $productResults['error'] : 'no reason given';
+                $output->writeln(sprintf('Product sync could not run: %s', $reason));
+                $this->logger->error('[InfoPlus] Product sync could not run', ['error' => $reason]);
             } else {
                 /** @var array<string,mixed> $result */
                 foreach ($productResults as $result) {
@@ -131,6 +158,15 @@ class SyncCommand extends Command
                 if (isset($orderResults['status']) && $orderResults['status'] === 'no order found') {
                     $output->writeln('No order found for synchronization.');
                     $this->logger->warning('[InfoPlus] No orders found for sync');
+                } elseif (isset($orderResults['status']) && $orderResults['status'] === 'error') {
+                    // The service reports a failure it could not get past - a dead API, missing
+                    // carriers - as ['status' => 'error', 'error' => ...], NOT as a list of
+                    // per-record results. Falling through to the loop below iterates that array's
+                    // VALUES and prints one meaningless "Failed to sync order -: unknown
+                    // error" line per key, naming no record and hiding the actual reason.
+                    $reason = is_string($orderResults['error'] ?? null) ? $orderResults['error'] : 'no reason given';
+                    $output->writeln(sprintf('Order sync could not run: %s', $reason));
+                    $this->logger->error('[InfoPlus] Order sync could not run', ['error' => $reason]);
                 } else {
                     /** @var array<string,mixed> $result */
                     foreach ($orderResults as $result) {
