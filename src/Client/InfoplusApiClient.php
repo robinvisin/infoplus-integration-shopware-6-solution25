@@ -205,10 +205,15 @@ class InfoplusApiClient
     {
         $allRecords = [];
         $page = 1;
-        if (isset($initialQuery['filter'])) {
-            $initialQuery['filter'] = $initialQuery['filter'] . " and lobId eq {$this->configService->get('lobId')}";
-        } else {
-            $initialQuery['filter'] = "lobId eq {$this->configService->get('lobId')}";
+        // Only scope by line of business when the caller has not already done so. Appending it
+        // unconditionally produced filters like
+        //   lobId eq 1 and customerNo eq 'X' and lobId eq 1
+        // which a tolerant server ignores and a strict one rejects.
+        $lobClause = "lobId eq {$this->configService->get('lobId')}";
+        if (!isset($initialQuery['filter']) || $initialQuery['filter'] === '') {
+            $initialQuery['filter'] = $lobClause;
+        } elseif (!str_contains((string) $initialQuery['filter'], $lobClause)) {
+            $initialQuery['filter'] .= ' and ' . $lobClause;
         }
         while (true) {
             $query = array_merge($initialQuery, [

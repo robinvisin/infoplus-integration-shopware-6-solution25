@@ -49,7 +49,11 @@ class CategorySyncService
         //get existing categories from InfoPlus if not already fetched
         if ($categories->count() === 0) {
             $categoriesToCreate = array_map(function ($category) {
-                $category['idForInfoplus'] = $category['id'] ?? null;
+                // Cast, like getMaxCategoryId() already does further down this file.
+                // idForInfoplus is a DAL StringField; if InfoPlus returns `id` as a JSON
+                // number the whole category sync aborts with
+                // "[/0/idForInfoplus] This value should be of type string".
+                $category['idForInfoplus'] = isset($category['id']) ? (string) $category['id'] : null;
                 unset($category['id']);
                 unset($category['lobId']);
                 unset($category['customFields']);
@@ -61,7 +65,7 @@ class CategorySyncService
                 $this->infoplusCategoryRepository->create($categoriesToCreate, $context);
             }
             $subCategoriesToCreate = array_map(function ($subCategory) {
-                $subCategory['idForInfoplus'] = $subCategory['id'] ?? null;
+                $subCategory['idForInfoplus'] = isset($subCategory['id']) ? (string) $subCategory['id'] : null;
                 unset($subCategory['id']);
                 unset($subCategory['lobId']);
                 unset($subCategory['customFields']);
